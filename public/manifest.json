@@ -1,0 +1,34 @@
+{
+  "name": "Qauntum Secure Guard",
+  "short_name": "Qauntum Secure Guard",
+  "description": "Qauntum Secure Guard App",
+  "start_url": "/",
+  "display": "standalone",
+  "scope": "/",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#0A0302",
+  "status_bar": "default",
+  "icons": [
+    {
+      "src": "/images/logo.png",
+      "sizes": "160x160"
+    }
+  ],
+  "dir": "ltr",
+  "lang": "en-US",
+  "screenshots": [
+    {
+      "src": "/images/logo.png",
+      "sizes": "750x1334",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Login",
+      "url": "/login/",
+      "description": "Qauntum Secure Guard Shortcut"
+    }
+  ]
+}
