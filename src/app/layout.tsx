@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import HomeHeader from "@/components/home-header";
-import SmartsuppClient from "@/components/chat/smartsupp-client";
+// import SmartsuppClient from "@/components/chat/smartsupp-client";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,7 +38,7 @@ export default async function Layout({
           {children}
 
           <Toaster position="top-right" />
-          <SmartsuppClient />
+          {/* <SmartsuppClient /> */}
         </ThemeProvider>
       </body>
     </html>
