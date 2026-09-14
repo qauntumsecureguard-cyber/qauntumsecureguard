@@ -195,7 +195,7 @@ export const getKycApprovedTemplate = (name: string) => {
                 </div>
 
                 <center>
-                    <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://globalquantumsystem.com"}/dashboard" class="cta-button">
+                    <a href="${process.env.NEXT_PUBLIC_APP_ORIGIN}/dashboard" class="cta-button">
                         Go to Dashboard
                     </a>
                 </center>
@@ -390,7 +390,7 @@ export const getKycRejectedTemplate = (name: string) => {
                 </div>
 
                 <center>
-                    <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://globalquantumsystem.com"}/kyc" class="cta-button">
+                    <a href="${process.env.NEXT_PUBLIC_APP_ORIGIN}/kyc" class="cta-button">
                         Resubmit Documents
                     </a>
                 </center>

@@ -1,6 +1,6 @@
 import { getFooter } from ".";
 
-const getAppUrl = () => process.env.NEXT_PUBLIC_APP_URL || "https://globalquantumsystem.com";
+const getAppUrl = () => process.env.NEXT_PUBLIC_APP_ORIGIN;
 
 export const getGrantSubmissionAdminTemplate = ({
   applicantName,

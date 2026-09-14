@@ -1,7 +1,7 @@
 import { getFooter } from ".";
 
 export const getSignUpBonusTemplate = (name: string) => {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://globalquantumsystem.com";
+  const appUrl = process.env.NEXT_PUBLIC_APP_ORIGIN;
 
   return `
     <!DOCTYPE html>
