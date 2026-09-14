@@ -1,4 +1,4 @@
-import { Home, Cog, CreditCard, ImageIcon, Smartphone, TrendingUp, Shield, Globe, Send, CheckCircle2, Lock, User, UserCheck, Star, Award, DollarSign, LayoutDashboard, ArrowDownLeft, ArrowUpRight, RefreshCw, ShoppingCart, Bell, Wallet, LucideIcon } from "lucide-react";
+import { Home, Cog, CreditCard, ImageIcon, Smartphone, TrendingUp, Shield, Globe, Send, CheckCircle2, Lock, User, UserCheck, Star, Award, DollarSign, LayoutDashboard, ArrowDownLeft, ArrowUpRight, RefreshCw, ShoppingCart, Bell, Wallet, LucideIcon, ArrowLeftRight } from "lucide-react";
 
 export const CRYPTO_ASSETS = [
   {
@@ -263,7 +263,8 @@ export const securityFeatures = [
 export const navItems = [
   { href: "/dashboard", icon: Home, label: "Home" },
   { href: "/card", icon: CreditCard, label: "Cards" },
-  { href: "/benefits", icon: Star, label: "Benefits" },
+  { href: "/grants", icon: Award, label: "Grants" },
+  { href: "/tax-refund", icon: DollarSign, label: "Tax Refund" },
   { href: "/settings", icon: User, label: "Me" }
 ];
 

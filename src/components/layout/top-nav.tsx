@@ -79,6 +79,17 @@ export function TopNav({ user }: { user: User }) {
                   Profile
                 </Link>
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel className="text-xs text-muted-foreground">Services</DropdownMenuLabel>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/grants">Grants</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/tax-refund">Tax Refund</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/benefits">Benefits</Link>
+              </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>

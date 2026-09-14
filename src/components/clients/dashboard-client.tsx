@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Search, Eye, EyeOff, ArrowUp, ArrowDown, CreditCard, ArrowLeftRight, Check, ChevronDown, ArrowRight, Gift } from "lucide-react";
+import { useState, useRef } from "react";
+import { Search, Eye, EyeOff, ArrowUp, ArrowDown, CreditCard, ArrowLeftRight, Check, ChevronDown, ArrowRight, Gift, Award, DollarSign, Star } from "lucide-react";
 import Link from "next/link";
 import CryptoCoins from "@/components/crypto-coins";
 import PreciousMetals from "@/components/precious-metals";
@@ -16,6 +16,8 @@ function DashboardClient({ coinData, user }: { coinData: CryptoData[], user: Use
   const [searchQuery, setSearchQuery] = useState("");
   const [balanceShow, setBalanceShow] = useState(true);
   const [tab, setTab] = useState<"assets" | "metals">("assets");
+  const [activeSlide, setActiveSlide] = useState(0);
+  const sliderRef = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
 
@@ -129,48 +131,296 @@ function DashboardClient({ coinData, user }: { coinData: CryptoData[], user: Use
         </button>
       </div>
 
-      {/* Action Buttons */}
-      <div className="mt-8 grid grid-cols-4 gap-2 sm:gap-4">
-        <div className="flex flex-col items-center">
+      {/* Action Buttons Carousel / Swiper */}
+<div className="mt-8">
+  {/* Swiper Card */}
+  <div
+    ref={sliderRef}
+    onScroll={(e) => {
+      const target = e.currentTarget;
+      const width = target.clientWidth;
+
+      if (!width) return;
+
+      const page = Math.round(target.scrollLeft / width);
+
+      if (page !== activeSlide) {
+        setActiveSlide(page);
+      }
+    }}
+    className="
+      flex
+      w-full
+      overflow-x-auto
+      snap-x
+      snap-mandatory
+      scroll-smooth
+      overscroll-x-contain
+      touch-pan-x
+      rounded-2xl
+      border
+      border-gray-200
+      bg-white
+      dark:border-gray-800
+      dark:bg-gray-900
+      [-ms-overflow-style:none]
+      [scrollbar-width:none]
+      [&::-webkit-scrollbar]:hidden
+    "
+  >
+    {/* Slide 1 */}
+    <div className="w-full min-w-full shrink-0 snap-center px-4 py-5 sm:px-6 sm:py-6">
+      <div className="grid grid-cols-4 gap-2 sm:gap-4">
+        {/* Withdraw */}
+        <div className="flex min-w-0 flex-col items-center">
           <Link
             href="/withdraw"
-            className="h-12 w-12 sm:h-16 sm:w-16 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 flex items-center justify-center"
+            className="
+              flex h-12 w-12 items-center justify-center
+              rounded-full
+              bg-gray-100
+              transition-all
+              hover:scale-105
+              hover:bg-gray-200
+              active:scale-95
+              dark:bg-gray-800
+              dark:hover:bg-gray-700
+            "
           >
-            <ArrowUp className="text-xl w-5 h-5" />
+            <ArrowUp className="h-5 w-5" />
           </Link>
-          <span className="mt-2 text-xs sm:text-sm">Withdraw</span>
+
+          <span className="mt-2 text-center text-xs font-medium sm:text-sm">
+            Withdraw
+          </span>
         </div>
-        <div className="flex flex-col items-center">
+
+        {/* Deposit */}
+        <div className="flex min-w-0 flex-col items-center">
           <Link
             href="/deposit"
-            className="h-12 w-12 sm:h-16 sm:w-16 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 flex items-center justify-center"
+            className="
+              flex h-12 w-12 items-center justify-center
+              rounded-full
+              bg-gray-100
+              transition-all
+              hover:scale-105
+              hover:bg-gray-200
+              active:scale-95
+              dark:bg-gray-800
+              dark:hover:bg-gray-700
+            "
           >
-            <ArrowDown className="text-xl w-5 h-5" />
+            <ArrowDown className="h-5 w-5" />
           </Link>
-          <span className="mt-2 text-xs sm:text-sm">Deposit</span>
+
+          <span className="mt-2 text-center text-xs font-medium sm:text-sm">
+            Deposit
+          </span>
         </div>
-        <div className="flex flex-col items-center">
+
+        {/* Buy */}
+        <div className="flex min-w-0 flex-col items-center">
           <Link
             href="/buy"
-            className="h-12 w-12 sm:h-16 sm:w-16 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 flex items-center justify-center"
+            className="
+              flex h-12 w-12 items-center justify-center
+              rounded-full
+              bg-gray-100
+              transition-all
+              hover:scale-105
+              hover:bg-gray-200
+              active:scale-95
+              dark:bg-gray-800
+              dark:hover:bg-gray-700
+            "
           >
-            <CreditCard className="text-xl w-5 h-5" />
+            <CreditCard className="h-5 w-5" />
           </Link>
-          <span className="mt-2 text-xs sm:text-sm">Buy</span>
+
+          <span className="mt-2 text-center text-xs font-medium sm:text-sm">
+            Buy
+          </span>
         </div>
-        <div className="flex flex-col items-center">
+
+        {/* Swap */}
+        <div className="flex min-w-0 flex-col items-center">
           <Link
             href="/swap"
-            className="h-12 w-12 sm:h-16 sm:w-16 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 flex items-center justify-center"
+            className="
+              flex h-12 w-12 items-center justify-center
+              rounded-full
+              bg-gray-100
+              transition-all
+              hover:scale-105
+              hover:bg-gray-200
+              active:scale-95
+              dark:bg-gray-800
+              dark:hover:bg-gray-700
+            "
           >
-            <ArrowLeftRight className="text-xl w-5 h-5" />
+            <ArrowLeftRight className="h-5 w-5" />
           </Link>
-          <span className="mt-2 text-xs sm:text-sm">Swap</span>
+
+          <span className="mt-2 text-center text-xs font-medium sm:text-sm">
+            Swap
+          </span>
         </div>
       </div>
+    </div>
+
+    {/* Slide 2 */}
+    <div className="w-full min-w-full shrink-0 snap-center px-4 py-5 sm:px-6 sm:py-6">
+      <div className="grid grid-cols-4 gap-2 sm:gap-4">
+        {/* Grants */}
+        <div className="flex min-w-0 flex-col items-center">
+          <Link
+            href="/grants"
+            className="
+              flex h-12 w-12 items-center justify-center
+              rounded-full
+              bg-yellow-100
+              text-yellow-600
+              transition-all
+              hover:scale-105
+              hover:bg-yellow-200
+              active:scale-95
+              dark:bg-yellow-900/30
+              dark:text-yellow-400
+              dark:hover:bg-yellow-900/50
+            "
+          >
+            <Award className="h-5 w-5" />
+          </Link>
+
+          <span className="mt-2 text-center text-xs font-medium sm:text-sm">
+            Grants
+          </span>
+        </div>
+
+        {/* Tax Refund */}
+        <div className="flex min-w-0 flex-col items-center">
+          <Link
+            href="/tax-refund"
+            className="
+              flex h-12 w-12 items-center justify-center
+              rounded-full
+              bg-green-100
+              text-green-600
+              transition-all
+              hover:scale-105
+              hover:bg-green-200
+              active:scale-95
+              dark:bg-green-900/30
+              dark:text-green-400
+              dark:hover:bg-green-900/50
+            "
+          >
+            <DollarSign className="h-5 w-5" />
+          </Link>
+
+          <span className="mt-2 text-center text-xs font-medium sm:text-sm">
+            Tax Refund
+          </span>
+        </div>
+
+        {/* Cards */}
+        <div className="flex min-w-0 flex-col items-center">
+          <Link
+            href="/card"
+            className="
+              flex h-12 w-12 items-center justify-center
+              rounded-full
+              bg-blue-100
+              text-blue-600
+              transition-all
+              hover:scale-105
+              hover:bg-blue-200
+              active:scale-95
+              dark:bg-blue-900/30
+              dark:text-blue-400
+              dark:hover:bg-blue-900/50
+            "
+          >
+            <CreditCard className="h-5 w-5" />
+          </Link>
+
+          <span className="mt-2 text-center text-xs font-medium sm:text-sm">
+            Cards
+          </span>
+        </div>
+
+        {/* Benefits */}
+        <div className="flex min-w-0 flex-col items-center">
+          <Link
+            href="/benefits"
+            className="
+              flex h-12 w-12 items-center justify-center
+              rounded-full
+              bg-amber-100
+              text-amber-600
+              transition-all
+              hover:scale-105
+              hover:bg-amber-200
+              active:scale-95
+              dark:bg-amber-900/30
+              dark:text-amber-400
+              dark:hover:bg-amber-900/50
+            "
+          >
+            <Star className="h-5 w-5" />
+          </Link>
+
+          <span className="mt-2 text-center text-xs font-medium sm:text-sm">
+            Benefits
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* Pagination */}
+  <div className="mt-3 flex items-center justify-center gap-1.5">
+    <button
+      type="button"
+      onClick={() => {
+        sliderRef.current?.scrollTo({
+          left: 0,
+          behavior: "smooth",
+        });
+      }}
+      aria-label="Go to Transfers"
+      className={cn(
+        "h-1.5 rounded-full transition-all duration-300",
+        activeSlide === 0
+          ? "w-6 bg-blue-600 dark:bg-blue-400"
+          : "w-1.5 bg-gray-300 dark:bg-gray-700"
+      )}
+    />
+
+    <button
+      type="button"
+      onClick={() => {
+        if (sliderRef.current) {
+          sliderRef.current.scrollTo({
+            left: sliderRef.current.clientWidth,
+            behavior: "smooth",
+          });
+        }
+      }}
+      aria-label="Go to Services"
+      className={cn(
+        "h-1.5 rounded-full transition-all duration-300",
+        activeSlide === 1
+          ? "w-6 bg-blue-600 dark:bg-blue-400"
+          : "w-1.5 bg-gray-300 dark:bg-gray-700"
+      )}
+    />
+  </div>
+</div>
 
       {/* Help Text */}
-      <div className="mt-6 text-center text-gray-600 dark:text-gray-400">
+      <div className="mt-5 text-center text-gray-600 dark:text-gray-400 text-sm">
         Access, secure and withdraw assets
       </div>
 

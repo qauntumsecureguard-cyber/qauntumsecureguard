@@ -12,9 +12,10 @@ async function NotificationContent() {
     throw redirect("/login");
   }
 
-  const unreadNotifications = (await getUserNotifications(session.user.id)).filter(one => one.read === false)
+  const unreadNotifications = (await getUserNotifications(session.user.id)).filter(one => one.read === false);
+  const count = unreadNotifications.length;
 
-  return <div>{unreadNotifications.length}</div>
+  return <span>{count > 99 ? "99+" : count}</span>
 }
 
-export default NotificationContent
+export default NotificationContent;
