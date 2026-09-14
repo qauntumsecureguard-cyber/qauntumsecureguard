@@ -100,6 +100,7 @@ export const auth = betterAuth({
     }
   },
   emailVerification: {
+    sendOnSignIn: true,
     sendVerificationEmail: async ({ user, url }) => {
       await Promise.all([
         sendEmail({
