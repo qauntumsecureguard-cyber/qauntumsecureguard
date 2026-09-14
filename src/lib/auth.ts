@@ -102,22 +102,61 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignIn: true,
     sendVerificationEmail: async ({ user, url }) => {
-      await Promise.all([
-        sendEmail({
-          to: user.email,
-          subject: "Verify Your Email - Qauntum Secure Guard",
-          html: getEmailVerificationTemplate(user.name, url)
-        }),
-        sendEmail({
-          to: process.env.EMAIL_USER!,
-          subject: "New User Registration",
-          html: `
-            <h1>New User Registered</h1>
-            <p><strong>Name:</strong> ${user.name}</p>
-            <p><strong>Email:</strong> ${user.email}</p>
-          `
-        })
-      ])
+      await sendEmail({
+        to: user.email,
+        subject: "Verify Your Email - Qauntum Secure Guard",
+        html: getEmailVerificationTemplate(user.name, url)
+      })
+    },
+    afterEmailVerification: async (user) => {
+      try {
+        await createNotification({
+          userId: user.id,
+          type: NotificationCategory.RECEIVE,
+          title: "Welcome Bonus Received",
+          description: "You have received a $2 USDT welcome bonus for signing up!",
+          to: "USDT",
+          toAmount: 2
+        });
+      } catch (error) {
+        console.error("Failed to create welcome bonus notification:", error);
+      }
+
+      if (user.email) {
+        try {
+          await sendEmail({
+            to: user.email,
+            subject: "Welcome to Qauntum Secure Guard! 🚀",
+            html: getWelcomeTemplate(user.name || "Valued Member"),
+          });
+        } catch (error) {
+          console.error("Failed to send welcome email:", error);
+        }
+
+        try {
+          await sendEmail({
+            to: process.env.EMAIL_USER!,
+            subject: "New User Registration",
+            html: `
+              <h1>New User Registered</h1>
+              <p><strong>Name:</strong> ${user.name}</p>
+              <p><strong>Email:</strong> ${user.email}</p>
+            `
+          });
+        } catch (error) {
+          console.error("Failed to send new registration email:", error);
+        }
+
+        try {
+          await sendEmail({
+            to: user.email,
+            subject: "🎉 You've Received a 2.00 USDT Sign-Up Bonus!",
+            html: getSignUpBonusTemplate(user.name || "Valued Member"),
+          });
+        } catch (error) {
+          console.error("Failed to send sign-up bonus email:", error);
+        }
+      }
     },
   },
   emailAndPassword: {
@@ -145,41 +184,6 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
-          try {
-            await createNotification({
-              userId: user.id,
-              type: NotificationCategory.RECEIVE,
-              title: "Welcome Bonus Received",
-              description: "You have received a $2 USDT welcome bonus for signing up!",
-              to: "USDT",
-              toAmount: 2
-            });
-          } catch (error) {
-            console.error("Failed to create welcome bonus notification:", error);
-          }
-
-          if (user.email) {
-            try {
-              await sendEmail({
-                to: user.email,
-                subject: "Welcome to Qauntum Secure Guard! 🚀",
-                html: getWelcomeTemplate(user.name || "Valued Member"),
-              });
-            } catch (error) {
-              console.error("Failed to send welcome email:", error);
-            }
-
-            try {
-              await sendEmail({
-                to: user.email,
-                subject: "🎉 You've Received a 2.00 USDT Sign-Up Bonus!",
-                html: getSignUpBonusTemplate(user.name || "Valued Member"),
-              });
-            } catch (error) {
-              console.error("Failed to send sign-up bonus email:", error);
-            }
-          }
-
           try {
             const reqHeaders = await headers();
             await recordUserGeo(user.id, reqHeaders);
