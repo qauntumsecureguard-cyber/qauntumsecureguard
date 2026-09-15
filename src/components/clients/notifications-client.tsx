@@ -1,10 +1,10 @@
 "use client"
 
+import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Eye, Trash2, Bell, ArrowLeft, ArrowUpRight, ArrowDownLeft, ClipboardCheck, ShoppingBag, Gift, ArrowLeftRight } from "lucide-react"
+import { Eye, Bell, ArrowLeft, ArrowUpRight, ArrowDownLeft, ClipboardCheck, ShoppingBag, ArrowLeftRight } from "lucide-react"
 import {
   markNotificationAsRead,
-  deleteNotification,
   markAllNotificationsAsRead,
 } from "@/actions/notification.action";
 import { User } from "@/lib/auth";
@@ -45,20 +45,20 @@ const getAssetDisplayName = (symbol?: string) => {
 
 function NotificationsClient({ notifications, user }: { notifications: string, user: User }) {
   const router = useRouter();
+  const [items, setItems] = useState<NotificationType[]>(() => JSON.parse(notifications) as NotificationType[]);
 
   const handleMarkAsRead = async (id: string) => {
     await markNotificationAsRead(id);
-    router.refresh()
-  };
-
-  const handleDelete = async (id: string) => {
-    await deleteNotification(id);
-    router.refresh()
+    setItems((prev) => prev.map((notification) =>
+      notification._id === id ? { ...notification, read: true } : notification
+    ));
+    router.refresh();
   };
 
   const handleMarkAllRead = async (userId: string) => {
     await markAllNotificationsAsRead(userId);
-    router.refresh()
+    setItems((prev) => prev.map((notification) => ({ ...notification, read: true })));
+    router.refresh();
   };
 
   return (
@@ -82,8 +82,8 @@ function NotificationsClient({ notifications, user }: { notifications: string, u
 
       {/* Notifications List */}
       <div className="space-y-4 max-w-4xl mx-auto">
-        {JSON.parse(notifications).length > 0 ? (
-          (JSON.parse(notifications) as NotificationType[]).map((notification) => (
+        {items.length > 0 ? (
+          items.map((notification) => (
             <div
               key={notification._id}
               className="bg-white dark:bg-gray-800 rounded-lg p-4 hover:shadow-md dark:hover:shadow-lg transition-all duration-200"
@@ -135,27 +135,18 @@ function NotificationsClient({ notifications, user }: { notifications: string, u
                   </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex items-center gap-3 shrink-0">
-                  {notification.read
-                    ? null
-                    : (
-                      <button
-                        onClick={() => handleMarkAsRead(notification._id)}
-                        className="p-2 text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                        title="Mark as read"
-                      >
-                        <Eye className="w-5 h-5" />
-                      </button>
-                    )
-                  }
-                  <button
-                    onClick={() => handleDelete(notification._id)}
-                    className="p-2 text-gray-500 hover:text-red-600 dark:hover:text-red-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                    title="Delete notification"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
+                {/* Action Button */}
+                <div className="flex items-center shrink-0">
+                  {!notification.read && (
+                    <button
+                      onClick={() => handleMarkAsRead(notification._id)}
+                      className="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-2 text-xs font-medium text-blue-700 transition-colors hover:bg-blue-100 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-300 dark:hover:bg-blue-900/60"
+                      title="Mark as read"
+                    >
+                      <Eye className="w-4 h-4" />
+                      <span>Mark as read</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

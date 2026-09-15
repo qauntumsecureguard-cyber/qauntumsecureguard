@@ -36,13 +36,13 @@ function Home() {
             <span className="text-sm font-semibold text-cyan-300">Qauntum Secure Guard</span>
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-black mb-6 leading-tight">
+          <h1 className="text-5xl md:text-6xl font-black mb-6 leading-tight text-slate-50">
             The Qauntum Secure Guard Platform
           </h1>
-          <p className="text-xl md:text-2xl text-cyan-300 mb-6 font-semibold">
+          <p className="text-xl md:text-2xl text-cyan-200 mb-6 font-semibold">
             Unlock Access to Advanced, Intelligent, and Next-Generation Digital Asset Solutions
           </p>
-          <p className="text-lg text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg text-slate-300 mb-12 max-w-3xl mx-auto leading-relaxed">
             Qauntum Secure Guard features a fortified encrypted ledger powered by quantum-grade security measures, designed to shield your holdings against cyber threats, market volatility, and infrastructure disruptions. Your asset integrity remains uncompromised and protected from any breach.
           </p>
 
@@ -59,7 +59,7 @@ function Home() {
             </Link>
           </div>
 
-          <div className="flex justify-center gap-4 text-sm text-gray-400">
+          <div className="flex justify-center gap-4 text-sm text-slate-300">
             <div className="flex items-center gap-1">
               <Shield size={16} className="text-cyan-400" />
               SOC 2 Certified

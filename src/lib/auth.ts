@@ -15,10 +15,10 @@ import { NotificationCategory } from "@/constants";
 import { headers } from "next/headers";
 import { recordUserGeo } from "./geo";
 
-await connectToDb();
+const mongoDb = await connectToDb();
 
 export const auth = betterAuth({
-  database: mongodbAdapter(mongoose.connection.db!),
+  database: mongodbAdapter(mongoDb),
   user: {
     additionalFields: {
       ipAddress: {
@@ -27,6 +27,26 @@ export const auth = betterAuth({
         defaultValue: ""
       },
       country: {
+        type: "string",
+        required: false,
+        defaultValue: ""
+      },
+      firstName: {
+        type: "string",
+        required: false,
+        defaultValue: ""
+      },
+      lastName: {
+        type: "string",
+        required: false,
+        defaultValue: ""
+      },
+      userId: {
+        type: "string",
+        required: false,
+        defaultValue: ""
+      },
+      mobileNumber: {
         type: "string",
         required: false,
         defaultValue: ""
@@ -101,7 +121,7 @@ export const auth = betterAuth({
   },
   emailVerification: {
     sendOnSignIn: true,
-    autoSignInAfterVerification: true,
+    autoSignInAfterVerification: false,
     sendVerificationEmail: async ({ user, url }) => {
       await sendEmail({
         to: user.email,

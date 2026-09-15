@@ -2,20 +2,26 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { AlertCircle, ArrowRight, CheckCircle2, Lock, Mail, MailCheck, Plus, RotateCw, ShieldCheck, User, UserPlus } from "lucide-react"
+import { AlertCircle, ArrowRight, CheckCircle2, Eye, EyeOff, Lock, Mail, MailCheck, Phone, Plus, RotateCw, ShieldCheck, User, UserPlus, BadgeCheck } from "lucide-react"
 import Link from "next/link"
+import { isUserIdAvailable } from "@/actions/auth.action"
 import { authClient } from "@/lib/auth-client"
 import { toast } from "sonner"
 
 function Register() {
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
+    userId: "",
     email: "",
+    mobileNumber: "",
     password: "",
     password_confirmation: ""
   })
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const router = useRouter()
 
   const [showSuccessModal, setShowSuccessModal] = useState(false)
@@ -32,8 +38,20 @@ function Register() {
   }
 
   const validateForm = () => {
-    if (!formData.name.trim()) {
-      setError("Name is required")
+    if (!formData.firstName.trim()) {
+      setError("First name is required")
+      return false
+    }
+    if (!formData.lastName.trim()) {
+      setError("Last name is required")
+      return false
+    }
+    if (!formData.userId.trim()) {
+      setError("User ID is required")
+      return false
+    }
+    if (!/^[A-Za-z0-9]+$/.test(formData.userId.trim())) {
+      setError("User ID must be alphanumeric")
       return false
     }
     if (!formData.email.trim()) {
@@ -42,6 +60,14 @@ function Register() {
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       setError("Please enter a valid email address")
+      return false
+    }
+    if (!formData.mobileNumber.trim()) {
+      setError("Mobile number is required")
+      return false
+    }
+    if (!/^[0-9+\-\s()]+$/.test(formData.mobileNumber.trim())) {
+      setError("Please enter a valid mobile number")
       return false
     }
     if (!formData.password) {
@@ -70,28 +96,47 @@ function Register() {
     setIsLoading(true)
     const emailToRegister = formData.email
 
-    authClient.signUp.email({
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-      walletStatus: "not-connected",
-      kyc: {
-        status: "none",
-        image: "",
-        type: ""
-      },
-      callbackURL: "/dashboard"
-    }, {
+    try {
+      const userIdCheck = await isUserIdAvailable(formData.userId)
+
+      if (!userIdCheck.available) {
+        setIsLoading(false)
+        setError(userIdCheck.error || "This User ID is already taken.")
+        toast.error(userIdCheck.error || "This User ID is already taken.")
+        return
+      }
+
+      authClient.signUp.email({
+        name: `${formData.firstName} ${formData.lastName}`.trim(),
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        userId: formData.userId,
+        mobileNumber: formData.mobileNumber,
+        email: formData.email,
+        password: formData.password,
+        walletStatus: "not-connected",
+        kyc: {
+          status: "none",
+          image: "",
+          type: ""
+        },
+        callbackURL: `/email-verified?email=${encodeURIComponent(emailToRegister)}`
+      }, {
       onError(context) {
         setIsLoading(false)
         toast.error(context.error.message || "An error occurred. Please try again.")
       },
-      async onSuccess() {
-        setIsLoading(false)
-        setRegisteredEmail(emailToRegister)
-        setShowSuccessModal(true)
-      }
-    })
+        async onSuccess() {
+          setIsLoading(false)
+          setRegisteredEmail(emailToRegister)
+          setShowSuccessModal(true)
+        }
+      })
+    } catch (error) {
+      console.error("Registration failed:", error)
+      setIsLoading(false)
+      toast.error("Unable to create your account right now. Please try again.")
+    }
   }
 
   const handleResendEmail = async () => {
@@ -100,7 +145,7 @@ function Register() {
     try {
       await authClient.sendVerificationEmail({
         email: registeredEmail,
-        callbackURL: "/dashboard"
+        callbackURL: `/email-verified?email=${encodeURIComponent(registeredEmail)}`
       })
       toast.success("Verification email resent! Please check your inbox and spam folder.")
       setResendCooldown(60)
@@ -133,30 +178,72 @@ function Register() {
 
       {/* Registration Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Full Name Field */}
-        <div className="space-y-2 animate-slideUp" style={{ animationDelay: "100ms" }}>
-          <label htmlFor="name" className="block text-sm font-medium text-black">
-            Full Name
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2 animate-slideUp" style={{ animationDelay: "100ms" }}>
+            <label htmlFor="firstName" className="block text-sm font-medium text-black">
+              First Name
+            </label>
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <User className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                id="firstName"
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                required
+                onChange={handleChange}
+                placeholder="John"
+                autoFocus
+                className="w-full pl-10 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black text-sm transition-all duration-300 placeholder-gray-400 group-hover:border-blue-500"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2 animate-slideUp" style={{ animationDelay: "120ms" }}>
+            <label htmlFor="lastName" className="block text-sm font-medium text-black">
+              Last Name
+            </label>
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <User className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                id="lastName"
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                required
+                onChange={handleChange}
+                placeholder="Doe"
+                className="w-full pl-10 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black text-sm transition-all duration-300 placeholder-gray-400 group-hover:border-blue-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-2 animate-slideUp" style={{ animationDelay: "160ms" }}>
+          <label htmlFor="userId" className="block text-sm font-medium text-black">
+            User ID (Alpha Numeric)
           </label>
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <User className="h-5 w-5 text-gray-400" />
+              <BadgeCheck className="h-5 w-5 text-gray-400" />
             </div>
             <input
-              id="name"
+              id="userId"
               type="text"
-              name="name"
-              value={formData.name}
+              name="userId"
+              value={formData.userId}
               required
               onChange={handleChange}
-              placeholder="John Doe"
-              autoFocus
+              placeholder="JDN12345"
               className="w-full pl-10 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black text-sm transition-all duration-300 placeholder-gray-400 group-hover:border-blue-500"
             />
           </div>
         </div>
 
-        {/* Email Field */}
         <div className="space-y-2 animate-slideUp" style={{ animationDelay: "200ms" }}>
           <label htmlFor="email" className="block text-sm font-medium text-black">
             Email
@@ -178,7 +265,27 @@ function Register() {
           </div>
         </div>
 
-        {/* Password Field */}
+        <div className="space-y-2 animate-slideUp" style={{ animationDelay: "240ms" }}>
+          <label htmlFor="mobileNumber" className="block text-sm font-medium text-black">
+            Mobile Number
+          </label>
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Phone className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              id="mobileNumber"
+              type="tel"
+              name="mobileNumber"
+              value={formData.mobileNumber}
+              required
+              onChange={handleChange}
+              placeholder="+1 234 567 8900"
+              className="w-full pl-10 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black text-sm transition-all duration-300 placeholder-gray-400 group-hover:border-blue-500"
+            />
+          </div>
+        </div>
+
         <div className="space-y-2 animate-slideUp" style={{ animationDelay: "300ms" }}>
           <label htmlFor="password" className="block text-sm font-medium text-black">
             Password
@@ -189,19 +296,26 @@ function Register() {
             </div>
             <input
               id="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}
               required
               onChange={handleChange}
               placeholder="••••••••"
               autoComplete="new-password"
-              className="w-full pl-10 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black text-sm transition-all duration-300 placeholder-gray-400 group-hover:border-blue-500"
+              className="w-full pl-10 pr-12 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black text-sm transition-all duration-300 placeholder-gray-400 group-hover:border-blue-500"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            </button>
           </div>
         </div>
 
-        {/* Confirm Password Field */}
         <div className="space-y-2 animate-slideUp" style={{ animationDelay: "400ms" }}>
           <label htmlFor="password_confirmation" className="block text-sm font-medium text-black">
             Confirm Password
@@ -212,15 +326,23 @@ function Register() {
             </div>
             <input
               id="password_confirmation"
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               name="password_confirmation"
               value={formData.password_confirmation}
               required
               onChange={handleChange}
               placeholder="••••••••"
               autoComplete="new-password"
-              className="w-full pl-10 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black text-sm transition-all duration-300 placeholder-gray-400 group-hover:border-blue-500"
+              className="w-full pl-10 pr-12 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black text-sm transition-all duration-300 placeholder-gray-400 group-hover:border-blue-500"
             />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword((prev) => !prev)}
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700"
+              aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+            >
+              {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            </button>
           </div>
         </div>
 
