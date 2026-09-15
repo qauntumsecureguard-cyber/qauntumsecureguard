@@ -8,13 +8,14 @@ const connectToDb = async () => {
       return mongoose.connection.db;
     }
 
-    if (mongoose.connection.readyState === 1 && mongoose.connection.client) {
-      return mongoose.connection.client.db();
+    const mongoClient = (mongoose.connection as any).client;
+    if (mongoose.connection.readyState === 1 && mongoClient) {
+      return mongoClient.db();
     }
 
     await mongoose.connect(process.env.MONGODB_URI!);
 
-    const database = mongoose.connection.db ?? mongoose.connection.client?.db();
+    const database = mongoose.connection.db ?? (mongoose.connection as any).client?.db();
 
     if (!database) {
       throw new Error("MongoDB database is not initialized.");
