@@ -588,21 +588,21 @@ function Home() {
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-black mb-4">Frequently Asked Questions</h2>
-            <p className="text-xl text-gray-400">Find answers to common questions about our platform</p>
+            <p className="text-xl text-slate-600">Find answers to common questions about our platform</p>
           </div>
 
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <div key={index} className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden hover:border-cyan-900/50 transition-all">
+              <div key={index} className="bg-white border border-blue-100 rounded-2xl overflow-hidden shadow-sm hover:border-blue-300 hover:shadow-md transition-all">
                 <button
                   onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                  className="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-lg hover:bg-slate-700/50 transition-colors"
+                  className="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-lg text-black hover:bg-blue-50 transition-colors"
                 >
                   {faq.question}
-                  <ChevronDown size={20} className={`transform transition-transform ${openFaq === index ? "rotate-180" : ""}`} />
+                  <ChevronDown className={`shrink-0 text-blue-700 transform transition-transform ${openFaq === index ? "rotate-180" : ""}`} size={20} />
                 </button>
                 {openFaq === index && (
-                  <div className="px-6 py-4 border-t border-slate-700 text-gray-400">
+                  <div className="px-6 py-4 border-t border-blue-100 bg-blue-50/40 text-slate-700 leading-relaxed">
                     {faq.answer}
                   </div>
                 )}
@@ -611,8 +611,8 @@ function Home() {
           </div>
 
           <div className="mt-12 text-center">
-            <p className="text-gray-400 mb-4">Still have questions?</p>
-            <button className="px-8 py-3 bg-cyan-500 text-slate-950 font-bold rounded-xl hover:bg-cyan-400 transition-colors">
+            <p className="text-slate-600 mb-4">Still have questions?</p>
+            <button className="px-8 py-3 bg-cyan-500 text-black font-bold rounded-xl hover:bg-cyan-400 transition-colors">
               Contact Support
             </button>
           </div>

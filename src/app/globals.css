@@ -191,7 +191,26 @@ button {
   .text-cyan-400,
   .text-cyan-500,
   .text-cyan-600 {
-    color: #0284c7 !important;
+    color: #075985 !important;
+  }
+
+  .text-blue-400,
+  .text-blue-500,
+  .text-blue-600,
+  .text-blue-700,
+  .text-gray-300,
+  .text-gray-400,
+  .text-gray-500,
+  .text-gray-600,
+  .text-gray-700,
+  .text-gray-800,
+  .text-gray-900 {
+    color: #334155 !important;
+  }
+
+  .text-blue-600,
+  .text-blue-700 {
+    color: #075985 !important;
   }
 
   .border-yellow-200,
