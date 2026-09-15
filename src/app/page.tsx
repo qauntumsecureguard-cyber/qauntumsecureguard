@@ -24,7 +24,7 @@ function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg text-white">
+    <div className="min-h-screen bg-white text-black">
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden hero-section">
         <div className="absolute inset-0 pointer-events-none hero-section-overlay" />

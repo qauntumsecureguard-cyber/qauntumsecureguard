@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
@@ -26,20 +25,13 @@ export default async function Layout({
   });
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <HomeHeader user={session?.user} />
-          {children}
+        <HomeHeader user={session?.user} />
+        {children}
 
-          <Toaster position="top-right" />
-          {/* <SmartsuppClient /> */}
-        </ThemeProvider>
+        <Toaster position="top-right" />
+        {/* <SmartsuppClient /> */}
       </body>
     </html>
   );

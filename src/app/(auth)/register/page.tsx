@@ -124,23 +124,23 @@ function Register() {
     <>
       {/* Header with icon */}
       <div className="text-center mb-8 animate-slideDown">
-        <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-yellow-100 dark:bg-yellow-900/30">
-          <UserPlus className="w-8 h-8 text-yellow-500 dark:text-yellow-400" />
+        <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-blue-100">
+          <UserPlus className="w-8 h-8 text-blue-600" />
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Create Account</h1>
-        <p className="text-gray-600 dark:text-gray-400">Join us today</p>
+        <h1 className="text-2xl font-bold text-black mb-2">Create Account</h1>
+        <p className="text-gray-600">Join us today</p>
       </div>
 
       {/* Registration Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Full Name Field */}
         <div className="space-y-2 animate-slideUp" style={{ animationDelay: "100ms" }}>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label htmlFor="name" className="block text-sm font-medium text-black">
             Full Name
           </label>
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <User className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+              <User className="h-5 w-5 text-gray-400" />
             </div>
             <input
               id="name"
@@ -151,19 +151,19 @@ function Register() {
               onChange={handleChange}
               placeholder="John Doe"
               autoFocus
-              className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-yellow-500 dark:focus:ring-yellow-600 focus:border-transparent dark:text-gray-200 text-sm transition-all duration-300 placeholder-gray-400 dark:placeholder-gray-500 group-hover:border-yellow-500 dark:group-hover:border-yellow-600"
+              className="w-full pl-10 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black text-sm transition-all duration-300 placeholder-gray-400 group-hover:border-blue-500"
             />
           </div>
         </div>
 
         {/* Email Field */}
         <div className="space-y-2 animate-slideUp" style={{ animationDelay: "200ms" }}>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label htmlFor="email" className="block text-sm font-medium text-black">
             Email
           </label>
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Mail className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+              <Mail className="h-5 w-5 text-gray-400" />
             </div>
             <input
               id="email"
@@ -173,19 +173,19 @@ function Register() {
               required
               onChange={handleChange}
               placeholder="john@example.com"
-              className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-yellow-500 dark:focus:ring-yellow-600 focus:border-transparent dark:text-gray-200 text-sm transition-all duration-300 placeholder-gray-400 dark:placeholder-gray-500 group-hover:border-yellow-500 dark:group-hover:border-yellow-600"
+              className="w-full pl-10 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black text-sm transition-all duration-300 placeholder-gray-400 group-hover:border-blue-500"
             />
           </div>
         </div>
 
         {/* Password Field */}
         <div className="space-y-2 animate-slideUp" style={{ animationDelay: "300ms" }}>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label htmlFor="password" className="block text-sm font-medium text-black">
             Password
           </label>
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Lock className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+              <Lock className="h-5 w-5 text-gray-400" />
             </div>
             <input
               id="password"
@@ -196,19 +196,19 @@ function Register() {
               onChange={handleChange}
               placeholder="••••••••"
               autoComplete="new-password"
-              className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-yellow-500 dark:focus:ring-yellow-600 focus:border-transparent dark:text-gray-200 text-sm transition-all duration-300 placeholder-gray-400 dark:placeholder-gray-500 group-hover:border-yellow-500 dark:group-hover:border-yellow-600"
+              className="w-full pl-10 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black text-sm transition-all duration-300 placeholder-gray-400 group-hover:border-blue-500"
             />
           </div>
         </div>
 
         {/* Confirm Password Field */}
         <div className="space-y-2 animate-slideUp" style={{ animationDelay: "400ms" }}>
-          <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label htmlFor="password_confirmation" className="block text-sm font-medium text-black">
             Confirm Password
           </label>
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <ShieldCheck className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+              <ShieldCheck className="h-5 w-5 text-gray-400" />
             </div>
             <input
               id="password_confirmation"
@@ -219,7 +219,7 @@ function Register() {
               onChange={handleChange}
               placeholder="••••••••"
               autoComplete="new-password"
-              className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-yellow-500 dark:focus:ring-yellow-600 focus:border-transparent dark:text-gray-200 text-sm transition-all duration-300 placeholder-gray-400 dark:placeholder-gray-500 group-hover:border-yellow-500 dark:group-hover:border-yellow-600"
+              className="w-full pl-10 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black text-sm transition-all duration-300 placeholder-gray-400 group-hover:border-blue-500"
             />
           </div>
         </div>

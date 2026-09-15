@@ -60,17 +60,17 @@ function ResetPasswordForm() {
   if (!token) {
     return (
       <div className="text-center space-y-6 animate-fadeIn">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30">
-          <AlertCircle className="w-8 h-8 text-red-500 dark:text-red-400" />
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100">
+          <AlertCircle className="w-8 h-8 text-blue-600" />
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Invalid Link</h1>
-        <p className="text-gray-600 dark:text-gray-400">
+        <h1 className="text-2xl font-bold text-black">Invalid Link</h1>
+        <p className="text-gray-600">
           This password reset link is invalid or has expired. Please request a new one.
         </p>
         <div className="pt-4">
           <Link
             href="/forgot-password"
-            className="inline-flex items-center text-sm font-medium text-yellow-600 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300 transition-all duration-300 hover:underline"
+            className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-700 transition-all duration-300 hover:underline"
           >
             Request new link
           </Link>
@@ -82,11 +82,11 @@ function ResetPasswordForm() {
   if (isSuccess) {
     return (
       <div className="text-center space-y-6 animate-fadeIn">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30">
-          <CheckCircle2 className="w-8 h-8 text-green-500 dark:text-green-400" />
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100">
+          <CheckCircle2 className="w-8 h-8 text-blue-600" />
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Success!</h1>
-        <p className="text-gray-600 dark:text-gray-400">
+        <h1 className="text-2xl font-bold text-black">Success!</h1>
+        <p className="text-gray-600">
           Your password has been successfully reset. You can now log in with your new password.
         </p>
         <div className="pt-4">
@@ -105,11 +105,11 @@ function ResetPasswordForm() {
   return (
     <>
       <div className="text-center mb-8 animate-slideDown space-y-3">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100 dark:bg-yellow-900/30">
-          <Lock className="w-8 h-8 text-yellow-500 dark:text-yellow-400" />
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100">
+          <Lock className="w-8 h-8 text-blue-600" />
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Reset Password</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <h1 className="text-2xl font-bold text-black">Reset Password</h1>
+        <p className="text-sm text-gray-600">
           Enter your new password below to complete the reset process.
         </p>
       </div>

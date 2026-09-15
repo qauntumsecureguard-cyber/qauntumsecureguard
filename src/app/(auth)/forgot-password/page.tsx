@@ -40,17 +40,17 @@ function ForgotPassword() {
   if (isSubmitted) {
     return (
       <div className="text-center space-y-6 animate-fadeIn">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30">
-          <CheckCircle2 className="w-8 h-8 text-green-500 dark:text-green-400" />
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100">
+          <CheckCircle2 className="w-8 h-8 text-blue-600" />
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Check your email</h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          We've sent a password reset link to <span className="font-medium text-gray-900 dark:text-white">{email}</span>.
+        <h1 className="text-2xl font-bold text-black">Check your email</h1>
+        <p className="text-gray-600">
+          We've sent a password reset link to <span className="font-medium text-black">{email}</span>.
         </p>
         <div className="pt-4">
           <Link
             href="/login"
-            className="inline-flex items-center text-sm font-medium text-yellow-600 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300 transition-all duration-300 hover:underline"
+            className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-700 transition-all duration-300 hover:underline"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to login
@@ -64,11 +64,11 @@ function ForgotPassword() {
     <>
       {/* Header with icon */}
       <div className="text-center mb-8 animate-slideDown space-y-3">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100 dark:bg-yellow-900/30">
-          <Key className="w-8 h-8 text-yellow-500 dark:text-yellow-400" />
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100">
+          <Key className="w-8 h-8 text-blue-600" />
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Reset Password</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400 max-w-xs mx-auto">
+        <h1 className="text-2xl font-bold text-black">Reset Password</h1>
+        <p className="text-sm text-gray-600 max-w-xs mx-auto">
           Forgot your password? No problem. Just let us know your email and we will send you a password reset link.
         </p>
       </div>

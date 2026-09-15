@@ -43,23 +43,23 @@ function Login() {
     <>
       {/* Header with icon */}
       <div className="text-center mb-8 animate-slideDown space-y-3">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100 dark:bg-yellow-900/30">
-          <Shield className="w-8 h-8 text-yellow-500 dark:text-yellow-400" />
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100">
+          <Shield className="w-8 h-8 text-blue-600" />
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Welcome back</h1>
-        <p className="text-gray-600 dark:text-gray-400">Please enter your details</p>
+        <h1 className="text-2xl font-bold text-black">Welcome back</h1>
+        <p className="text-gray-600">Please enter your details</p>
       </div>
 
       {/* Login Form */}
       <form onSubmit={handleSubmit} className="space-y-3">
         {/* Email */}
         <div className="space-y-2 animate-slideUp" style={{ animationDelay: "100ms" }}>
-          <label htmlFor="login" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label htmlFor="login" className="block text-sm font-medium text-black">
             Email
           </label>
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <User className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+              <User className="h-5 w-5 text-gray-400" />
             </div>
             <input
               id="email"
@@ -69,11 +69,11 @@ function Login() {
               placeholder="Enter your email"
               autoComplete="on"
               autoFocus
-              className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-yellow-500 dark:focus:ring-yellow-600 focus:border-transparent dark:text-gray-200 text-sm transition-all duration-300 placeholder-gray-400 dark:placeholder-gray-500 group-hover:border-yellow-500 dark:group-hover:border-yellow-600"
+              className="w-full pl-10 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black text-sm transition-all duration-300 placeholder-gray-400 group-hover:border-blue-500"
             />
             {email && (
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center transition-opacity duration-300">
-                <CheckCircle2 className="h-5 w-5 text-yellow-500" />
+                <CheckCircle2 className="h-5 w-5 text-blue-500" />
               </div>
             )}
           </div>
@@ -81,12 +81,12 @@ function Login() {
 
         {/* Password Field */}
         <div className="space-y-2 animate-slideUp" style={{ animationDelay: "200ms" }}>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label htmlFor="password" className="block text-sm font-medium text-black">
             Password
           </label>
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Lock className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+              <Lock className="h-5 w-5 text-gray-400" />
             </div>
             <input
               id="password"
@@ -95,7 +95,7 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               autoComplete="current-password"
-              className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-yellow-500 dark:focus:ring-yellow-600 focus:border-transparent dark:text-gray-200 text-sm transition-all duration-300 placeholder-gray-400 dark:placeholder-gray-500 group-hover:border-yellow-500 dark:group-hover:border-yellow-600"
+              className="w-full pl-10 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black text-sm transition-all duration-300 placeholder-gray-400 group-hover:border-blue-500"
             />
           </div>
         </div>

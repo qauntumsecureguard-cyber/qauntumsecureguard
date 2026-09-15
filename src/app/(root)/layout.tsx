@@ -31,7 +31,7 @@ async function RootLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <div className="flex min-h-dvh bg-white text-gray-700 dark:bg-dark-800 dark:text-white">
+      <div className="flex min-h-dvh bg-white text-black">
         <Sidebar />
         <div className="content-area flex-1 md:ml-64 mr-0">
           <TopNav user={session.user} />
