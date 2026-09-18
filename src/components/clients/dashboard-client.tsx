@@ -13,7 +13,6 @@ import { cn } from "@/lib/utils";
 import { PRECIOUS_METALS, METAL_PRICES } from "@/constants";
 
 function DashboardClient({ coinData, user }: { coinData: CryptoData[], user: User }) {
-  const [searchQuery, setSearchQuery] = useState("");
   const [balanceShow, setBalanceShow] = useState(true);
   const [tab, setTab] = useState<"assets" | "metals">("assets");
   const [activeSlide, setActiveSlide] = useState(0);
@@ -43,24 +42,9 @@ function DashboardClient({ coinData, user }: { coinData: CryptoData[], user: Use
   });
 
   const kycStatus = user.kyc.status;
-  const filteredCoinData = coinData.filter((coin) => coin.name.toLowerCase().includes(searchQuery.toLowerCase()) || coin.symbol.toLowerCase().includes(searchQuery.toLowerCase()) || coin.network?.toLowerCase().includes(searchQuery.toLowerCase()));
-
-  const filteredMetalData = metalData.filter((coin) => coin.name.toLowerCase().includes(searchQuery.toLowerCase()) || coin.symbol.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
     <main className="p-2 px-4 pb-24 md:pb-4">
-      {/* Search Bar */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search"
-          className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
       {/* Account Name with Dropdown */}
       <div className="mt-6">
         <div className="flex justify-between items-center sm:justify-start sm:space-x-4">
@@ -459,8 +443,8 @@ function DashboardClient({ coinData, user }: { coinData: CryptoData[], user: Use
         </div>
 
         {tab === "assets"
-          ? <CryptoCoins coinData={filteredCoinData} page="dashboard" />
-          : <PreciousMetals metalData={filteredMetalData} page="dashboard" />
+          ? <CryptoCoins coinData={coinData} page="dashboard" />
+          : <PreciousMetals metalData={metalData} page="dashboard" />
         }
       </div>
     </main>

@@ -87,6 +87,13 @@ function HomeHeader({ user }: { user: User | undefined }) {
           >
             About
           </a>
+          <a
+            href="#contact"
+            className="block px-4 py-2 text-black hover:text-blue-600"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Contact
+          </a>
           {user
             ? (
               <Link

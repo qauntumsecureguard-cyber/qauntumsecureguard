@@ -55,6 +55,10 @@
   --radius-4xl: calc(var(--radius) + 16px);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: 'Inter', Arial, Helvetica, sans-serif;
 }

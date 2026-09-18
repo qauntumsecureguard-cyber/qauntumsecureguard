@@ -4,15 +4,15 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { User } from '@/lib/auth'
 import { Button } from "@/components/ui/button"
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Menu } from "lucide-react"
 import Image from "next/image";
 
 export function TopNav({ user }: { user: User }) {
@@ -30,46 +30,72 @@ export function TopNav({ user }: { user: User }) {
       </div>
 
       <div className="flex items-center">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open navigation menu">
+              <Menu className="size-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-72 sm:max-w-sm">
+            <SheetHeader>
+              <SheetTitle>Qauntum Secure Guard</SheetTitle>
+            </SheetHeader>
+            <nav className="flex flex-col gap-1 px-4">
+              {user.role === "admin" && (
+                <SheetClose asChild>
+                  <Link href="/admin" className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent">
+                    Admin
+                  </Link>
+                </SheetClose>
+              )}
+              <SheetClose asChild>
+                <Link href="/profile" className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent">
+                  Profile
+                </Link>
+              </SheetClose>
+
+              <div className="px-3 pb-1 pt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Services
+              </div>
+              <SheetClose asChild>
+                <Link href="/benefits" className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent">
+                  Benefits
+                </Link>
+              </SheetClose>
+              <SheetClose asChild>
+                <Link href="/connect-wallet" className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent">
+                  Connect Wallet
+                </Link>
+              </SheetClose>
+              <SheetClose asChild>
+                <Link href="/notifications" className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent">
+                  Notifications
+                </Link>
+              </SheetClose>
+              <SheetClose asChild>
+                <Link href="/settings" className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent">
+                  Settings
+                </Link>
+              </SheetClose>
+            </nav>
+          </SheetContent>
+        </Sheet>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline">
-              {user.name.split("")[0]}
+            <Button variant="outline" className="hidden md:inline-flex">
+              {user.name.charAt(0)}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuGroup>
               {user.role === "admin" && (
-                <DropdownMenuItem
-                  asChild
-                  className="cursor-pointer"
-                >
-                  <Link
-                    href="/admin"
-                  >
-                    Admin
-                  </Link>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link href="/admin">Admin</Link>
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem
-                asChild
-                className="cursor-pointer"
-              >
-                <Link
-                  href="/profile"
-                >
-                  Profile
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuLabel className="text-xs text-muted-foreground">Services</DropdownMenuLabel>
               <DropdownMenuItem asChild className="cursor-pointer">
-                <Link href="/grants">Grants</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="cursor-pointer">
-                <Link href="/tax-refund">Tax Refund</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="cursor-pointer">
-                <Link href="/benefits">Benefits</Link>
+                <Link href="/profile">Profile</Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>

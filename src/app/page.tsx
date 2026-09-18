@@ -6,6 +6,7 @@ import Image from "next/image"
 import { ChevronDown, ChevronUp, Shield, Lock, TrendingUp, Bolt, DollarSign, KeySquareIcon, ShieldCheck, Cloud, UserPlus, ShieldHalfIcon, BarChart, Smartphone, Zap, Verified, Star } from "lucide-react"
 import { faqs, patner } from "@/constants"
 import { Button } from "@/components/ui/button"
+import ContactSection from "@/components/contact-section"
 
 function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
@@ -33,7 +34,7 @@ function Home() {
             <span className="inline-block bg-cyan-400 rounded-full animate-pulse">
               <Verified size={12} />
             </span>
-            <span className="text-sm font-semibold text-cyan-300">Qauntum Secure Guard</span>
+            <span className="text-sm font-semibold text-cyan-300/60">Qauntum Secure Guard</span>
           </div>
 
           <h1 className="text-5xl md:text-6xl font-black mb-6 leading-tight text-slate-50">
@@ -175,8 +176,7 @@ function Home() {
               <p className="text-sm text-gray-400">Dual-verification security on Qauntum Secure Guard provides reinforced access controls through advanced two-step validation protocols. This layered approach ensures comprehensive protection against unauthorized entry, fraud attempts, and security breaches, keeping your holdings completely secure.</p>
             </div>
 
-            <div className="rounded-2xl p-8 text-center security-badge border hover:shadow-cyan-500/40"
-              style={{ background: "rgba(26, 41, 66, 0.6); border-color: rgba(0, 212, 255, 0.1)" }}>
+            <div className="rounded-2xl p-8 text-center security-badge border border-cyan-900/40 hover:shadow-cyan-500/40 bg-slate-800/60">
               <div className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4"
                 style={{ background: "rgba(212, 175, 55, 0.1)" }}>
                 <span className="material-symbols-outlined text-gold text-4xl">
@@ -455,8 +455,7 @@ function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="rounded-2xl p-8 border hover:shadow-cyan-500/40 card-hover"
-              style={{ background: "rgba(10, 22, 40, 0.6); border-color: rgba(0, 212, 255, 0.1)" }}>
+            <div className="rounded-2xl p-8 border border-cyan-900/30 hover:shadow-cyan-500/40 bg-slate-800/60 card-hover">
               <div className="flex items-center gap-1 mb-4">
                 {Array.from({ length: 5 }).map((_, index) => (
                   <span key={index} className="material-symbols-outlined text-gold">
@@ -478,8 +477,7 @@ function Home() {
               </div>
             </div>
 
-            <div className="rounded-2xl p-8 border hover:shadow-cyan-500/40 card-hover"
-              style={{ background: "rgba(10, 22, 40, 0.6); border-color: rgba(0, 212, 255, 0.1)" }}>
+            <div className="rounded-2xl p-8 border border-cyan-900/30 hover:shadow-cyan-500/40 bg-slate-800/60 card-hover">
               <div className="flex items-center gap-1 mb-4">
                 {Array.from({ length: 5 }).map((_, index) => (
                   <span key={index} className="material-symbols-outlined text-gold">
@@ -501,8 +499,7 @@ function Home() {
               </div>
             </div>
 
-            <div className="rounded-2xl p-8 border hover:shadow-cyan-500/40 card-hover"
-              style={{ background: "rgba(10, 22, 40, 0.6); border-color: rgba(0, 212, 255, 0.1)" }}>
+            <div className="rounded-2xl p-8 border border-cyan-900/30 hover:shadow-cyan-500/80 bg-slate-800/60 card-hover">
               <div className="flex items-center gap-1 mb-4">
                 {Array.from({ length: 5 }).map((_, index) => (
                   <span key={index} className="material-symbols-outlined text-gold">
@@ -612,12 +609,17 @@ function Home() {
 
           <div className="mt-12 text-center">
             <p className="text-slate-600 mb-4">Still have questions?</p>
-            <button className="px-8 py-3 bg-cyan-500 text-black font-bold rounded-xl hover:bg-cyan-400 transition-colors">
-              Contact Support
-            </button>
+            <a href="#contact">
+              <button className="px-8 py-3 bg-cyan-500 text-black font-bold rounded-xl hover:bg-cyan-400 transition-colors">
+                Contact Support
+              </button>
+            </a>
           </div>
         </div>
       </section>
+
+      {/* Contact Section */}
+      <ContactSection />
 
       {/* CTA Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-linear-to-b from-transparent to-cyan-900/40">
@@ -678,9 +680,9 @@ function Home() {
             <div>
               <h4 className="font-bold text-lg mb-4">Company</h4>
               <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Contact</a></li>
+                <li><a href="#platform" className="hover:text-cyan-400 transition-colors">About Us</a></li>
+                <li><a href="#features" className="hover:text-cyan-400 transition-colors">Features</a></li>
+                <li><a href="#contact" className="hover:text-cyan-400 transition-colors">Contact</a></li>
               </ul>
             </div>
 
