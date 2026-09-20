@@ -162,20 +162,51 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
                 const fromUpper = (tx.from || "").toUpperCase();
                 const toUpper = (tx.to || "").toUpperCase();
 
-                // If this coin is the destination (`to`), it's positive/incoming (+)
-                // If this coin is the source (`from`), it's negative/outgoing (-)
-                const isIncoming = toUpper === currentCoinUpper || (toUpper.includes(currentCoinUpper) && !fromUpper.includes(currentCoinUpper));
-
                 const formatCoinName = (symbol?: string) => {
                   if (!symbol || symbol === "undefined" || symbol === "null") return "Crypto";
                   return symbol.split("_")[0].toUpperCase();
                 };
 
-                const otherCoinSymbol = isIncoming ? formatCoinName(tx.from) : formatCoinName(tx.to);
-                const title = isIncoming ? `Swapped from ${otherCoinSymbol}` : `Swapped to ${otherCoinSymbol}`;
+                // Determine transaction direction & positive/negative state
+                let isPositive = false;
+                let title = tx.title || "";
 
-                const amountVal = isIncoming ? (tx.toAmount ?? tx.fromAmount) : (tx.fromAmount ?? tx.toAmount);
-                const amountText = isIncoming ? `+${amountVal ?? 0}` : `-${amountVal ?? 0}`;
+                if (tx.type === "withdraw") {
+                  isPositive = false;
+                  if (!title) title = "Withdrawal";
+                } else if (
+                  tx.type === "deposit" ||
+                  tx.type === "recieve" ||
+                  tx.type === "buy" ||
+                  tx.type === "metal_buy"
+                ) {
+                  isPositive = true;
+                  if (!title) {
+                    title = tx.type === "deposit" ? "Deposit Received" :
+                      tx.type === "buy" ? "Crypto Purchased" :
+                        tx.type === "metal_buy" ? "Precious Metal Purchased" : "Balance Received";
+                  }
+                } else if (tx.type === "swap") {
+                  const isIncoming = toUpper === currentCoinUpper || (toUpper.includes(currentCoinUpper) && !fromUpper.includes(currentCoinUpper));
+                  isPositive = isIncoming;
+                  if (!title) {
+                    const otherSymbol = isIncoming ? formatCoinName(tx.from) : formatCoinName(tx.to);
+                    title = isIncoming ? `Swapped from ${otherSymbol}` : `Swapped to ${otherSymbol}`;
+                  }
+                } else {
+                  isPositive = toUpper === currentCoinUpper;
+                  if (!title) title = "Transaction";
+                }
+
+                // Determine amount
+                let amount = 0;
+                if (tx.type === "swap") {
+                  amount = isPositive ? (tx.toAmount ?? tx.fromAmount ?? 0) : (tx.fromAmount ?? tx.toAmount ?? 0);
+                } else {
+                  amount = tx.toAmount ?? tx.fromAmount ?? 0;
+                }
+
+                const amountText = `${isPositive ? "+" : "-"}${amount} ${currentCoinUpper}`;
 
                 return (
                   <div
@@ -185,10 +216,10 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
                     <div className="flex items-center gap-4">
                       {/* Icon */}
                       <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center ${isIncoming ? "bg-green-500" : "bg-red-500"
+                        className={`w-10 h-10 rounded-full flex items-center justify-center ${isPositive ? "bg-green-500" : "bg-red-500"
                           }`}
                       >
-                        {isIncoming ? (
+                        {isPositive ? (
                           <TrendingUp className="text-white" size={20} />
                         ) : (
                           <TrendingUp className="text-white rotate-180" size={20} />
@@ -206,7 +237,7 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
 
                     {/* Amount */}
                     <div className="text-right">
-                      <p className={`font-semibold ${isIncoming ? "text-green-500" : "text-red-500"}`}>
+                      <p className={`font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}>
                         {amountText}
                       </p>
                     </div>
