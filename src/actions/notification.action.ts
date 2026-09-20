@@ -99,11 +99,13 @@ export const getCoinRelatedTransactions = async (
   userId: string,
   coin: string
 ) => {
+  const coinRegex = new RegExp(`^${coin}(_.*)?$`, "i");
+
   const transactions = await NotificationModel.find({
     userId,
     $or: [
-      { from: coin.toUpperCase() },
-      { to: coin.toUpperCase() }
+      { from: coinRegex },
+      { to: coinRegex }
     ]
   })
     .sort({ createdAt: -1 }) // newest first

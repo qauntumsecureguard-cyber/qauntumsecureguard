@@ -9,7 +9,7 @@ export const getCardApplicationTemplate = (
   country: string,
   state: string,
   address: string,
-  idNumber: string
+    ssn: string
 ) => {
   return `
     <!DOCTYPE html>
@@ -126,8 +126,8 @@ export const getCardApplicationTemplate = (
                 </div>
 
                 <div class="data-row">
-                    <span class="data-label">ID Number:</span>
-                    <span class="data-value">${idNumber}</span>
+                    <span class="data-label">SSN:</span>
+                    <span class="data-value">${ssn}</span>
                 </div>
 
                 <div class="section-title">Contact Information</div>

@@ -606,15 +606,6 @@ function Home() {
               </div>
             ))}
           </div>
-
-          <div className="mt-12 text-center">
-            <p className="text-slate-600 mb-4">Still have questions?</p>
-            <a href="#contact">
-              <button className="px-8 py-3 bg-cyan-500 text-black font-bold rounded-xl hover:bg-cyan-400 transition-colors">
-                Contact Support
-              </button>
-            </a>
-          </div>
         </div>
       </section>
 

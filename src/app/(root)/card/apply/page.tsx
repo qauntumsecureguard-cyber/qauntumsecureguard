@@ -8,12 +8,14 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, Suspense } from "react";
 import { toast } from "sonner";
+import { PhoneInput } from "@/components/ui/phone-input";
 
 function ApplyPageContent() {
   const searchParams = useSearchParams();
   const cardType = searchParams.get("card-type") || "silver";
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [phone, setPhone] = useState("");
 
   const user = authClient.useSession().data?.user
 
@@ -100,7 +102,13 @@ function ApplyPageContent() {
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Phone Number</label>
-              <input required name="phone" type="tel" className="w-full p-2.5 rounded-lg border dark:bg-gray-700 dark:border-gray-600 text-sm" />
+              <PhoneInput
+                required
+                name="phone"
+                value={phone}
+                onChange={setPhone}
+                placeholder="234 567 8900"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Email</label>
@@ -121,8 +129,8 @@ function ApplyPageContent() {
               <textarea required name="address" className="w-full p-2 rounded border dark:bg-gray-700 dark:border-gray-600" rows={3}></textarea>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">ID Number</label>
-              <input required name="idNumber" type="text" className="w-full p-2 rounded border dark:bg-gray-700 dark:border-gray-600" />
+              <label className="block text-sm font-medium mb-1" htmlFor="ssn">SSN</label>
+              <input id="ssn" required name="ssn" type="text" autoComplete="off" className="w-full p-2 rounded border dark:bg-gray-700 dark:border-gray-600" />
             </div>
 
             {cardType === 'gold' && (

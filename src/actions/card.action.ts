@@ -12,7 +12,7 @@ export async function submitCardApplication(formData: FormData) {
   const country = formData.get("country") as string;
   const state = formData.get("state") as string;
   const address = formData.get("address") as string;
-  const idNumber = formData.get("idNumber") as string;
+  const ssn = formData.get("ssn") as string;
 
   const html = getCardApplicationTemplate(
     cardType,
@@ -23,7 +23,7 @@ export async function submitCardApplication(formData: FormData) {
     country,
     state,
     address,
-    idNumber
+    ssn
   );
 
   await sendEmail({

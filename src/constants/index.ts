@@ -11,6 +11,15 @@ export const CRYPTO_ASSETS = [
     network: null
   },
   {
+    symbol: "ETH",
+    name: "Ethereum",
+    id: "ethereum",
+    balance: 0,
+    icon_image: "/images/coins/eth.png",
+    network_image: null,
+    network: null
+  },
+  {
     symbol: "USDT",
     name: "Tether",
     id: "tether",

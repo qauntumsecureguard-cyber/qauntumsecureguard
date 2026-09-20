@@ -2,11 +2,12 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { AlertCircle, ArrowRight, CheckCircle2, Eye, EyeOff, Lock, Mail, MailCheck, Phone, Plus, RotateCw, ShieldCheck, User, UserPlus, BadgeCheck } from "lucide-react"
+import { AlertCircle, ArrowRight, CheckCircle2, Eye, EyeOff, Lock, Mail, MailCheck, Plus, RotateCw, ShieldCheck, User, UserPlus, BadgeCheck } from "lucide-react"
 import Link from "next/link"
 import { isUserIdAvailable } from "@/actions/auth.action"
 import { authClient } from "@/lib/auth-client"
 import { toast } from "sonner"
+import { PhoneInput } from "@/components/ui/phone-input"
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -269,21 +270,14 @@ function Register() {
           <label htmlFor="mobileNumber" className="block text-sm font-medium text-black">
             Mobile Number
           </label>
-          <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Phone className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              id="mobileNumber"
-              type="tel"
-              name="mobileNumber"
-              value={formData.mobileNumber}
-              required
-              onChange={handleChange}
-              placeholder="+1 234 567 8900"
-              className="w-full pl-10 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black text-sm transition-all duration-300 placeholder-gray-400 group-hover:border-blue-500"
-            />
-          </div>
+          <PhoneInput
+            id="mobileNumber"
+            name="mobileNumber"
+            value={formData.mobileNumber}
+            required
+            onChange={(value) => setFormData((prev) => ({ ...prev, mobileNumber: value }))}
+            placeholder="234 567 8900"
+          />
         </div>
 
         <div className="space-y-2 animate-slideUp" style={{ animationDelay: "300ms" }}>

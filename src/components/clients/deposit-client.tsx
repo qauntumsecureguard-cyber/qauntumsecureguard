@@ -16,6 +16,7 @@ interface DepositClientProps {
 
 const coinAddresses = {
   BTC: "bc1q95h4ve6437mcusf700vk2w6tf9tv9ajzswtusa",
+  ETH: "0x71C7656EC7ab88b098defB751B7401B5f6d8976F",
   USDT: "TUYrWVABNcTik9NHwFeKKqB9hFr5JAf3ai",
   XRP: "rBoAWvbTiPejkgPyKMKXjyUJvnFHpD9GsX",
   SOL: "AvVng3RjJ6WUNWgDxSoMVMpMwQCSBJpzmYcPB1TzMGty",
@@ -26,6 +27,7 @@ const coinAddresses = {
 
 export const TRUST_WALLET_ASSET_MAP: Record<string, string> = {
   BTC: "c0",                 // Bitcoin
+  ETH: "c60",                // Ethereum
   USDT: "c195_tether", // Tether on Tron (TRC20)
   ADA: "c1815",              // Cardano
   XLM: "c148",               // Stellar

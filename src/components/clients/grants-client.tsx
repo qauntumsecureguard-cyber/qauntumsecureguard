@@ -69,7 +69,7 @@ export default function GrantsClient() {
             </div>
             <Link
               href="/grants/apply?type=company"
-              className="py-3 rounded-xl w-full bg-gray-300 dark:bg-white/10 hover:bg-gray-400 dark:hover:bg-white/20 text-gray-900 dark:text-white font-medium transition-colors text-center text-sm"
+              className="py-3 rounded-xl w-full bg-blue-600 hover:bg-blue-500 text-white font-medium transition-colors text-center text-sm"
             >
               Continue
             </Link>

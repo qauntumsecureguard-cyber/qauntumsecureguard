@@ -13,7 +13,7 @@ function Login() {
   const searchParams = useSearchParams()
   const [identifier, setIdentifier] = useState(searchParams.get("email") ?? "")
   const [password, setPassword] = useState("")
-  const [rememberMe, setRememberMe] = useState(false)
+  const [rememberMe, setRememberMe] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 

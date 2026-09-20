@@ -158,7 +158,24 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
           <div className="space-y-4">
             {(JSON.parse(transactions) as NotificationType[]).length > 0
               ? (JSON.parse(transactions) as NotificationType[]).map((tx) => {
-                const isPositive = tx.from === coin.toUpperCase();
+                const currentCoinUpper = coin.toUpperCase();
+                const fromUpper = (tx.from || "").toUpperCase();
+                const toUpper = (tx.to || "").toUpperCase();
+
+                // If this coin is the destination (`to`), it's positive/incoming (+)
+                // If this coin is the source (`from`), it's negative/outgoing (-)
+                const isIncoming = toUpper === currentCoinUpper || (toUpper.includes(currentCoinUpper) && !fromUpper.includes(currentCoinUpper));
+
+                const formatCoinName = (symbol?: string) => {
+                  if (!symbol || symbol === "undefined" || symbol === "null") return "Crypto";
+                  return symbol.split("_")[0].toUpperCase();
+                };
+
+                const otherCoinSymbol = isIncoming ? formatCoinName(tx.from) : formatCoinName(tx.to);
+                const title = isIncoming ? `Swapped from ${otherCoinSymbol}` : `Swapped to ${otherCoinSymbol}`;
+
+                const amountVal = isIncoming ? (tx.toAmount ?? tx.fromAmount) : (tx.fromAmount ?? tx.toAmount);
+                const amountText = isIncoming ? `+${amountVal ?? 0}` : `-${amountVal ?? 0}`;
 
                 return (
                   <div
@@ -168,10 +185,10 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
                     <div className="flex items-center gap-4">
                       {/* Icon */}
                       <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center ${isPositive ? "bg-green-500" : "bg-red-500"
+                        className={`w-10 h-10 rounded-full flex items-center justify-center ${isIncoming ? "bg-green-500" : "bg-red-500"
                           }`}
                       >
-                        {isPositive ? (
+                        {isIncoming ? (
                           <TrendingUp className="text-white" size={20} />
                         ) : (
                           <TrendingUp className="text-white rotate-180" size={20} />
@@ -180,9 +197,7 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
 
                       {/* Details */}
                       <div>
-                        <h4 className="font-semibold">
-                          {isPositive ? `Swapped from ${tx.to}` : `Swapped to ${tx.from}`}
-                        </h4>
+                        <h4 className="font-semibold">{title}</h4>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
                           {formatDate(tx.createdAt)}
                         </p>
@@ -191,8 +206,8 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
 
                     {/* Amount */}
                     <div className="text-right">
-                      <p className={`font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}>
-                        {isPositive ? `+${tx.fromAmount}` : `-${tx.toAmount}`} {isPositive ? tx.to : tx.from}
+                      <p className={`font-semibold ${isIncoming ? "text-green-500" : "text-red-500"}`}>
+                        {amountText}
                       </p>
                     </div>
                   </div>

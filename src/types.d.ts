@@ -16,6 +16,9 @@ type UserCoin = {
   BTC: {
     balance: number
   },
+  ETH: {
+    balance: number
+  },
   "USDT_TRC20": {
     balance: number,
     network: "TRC20"
