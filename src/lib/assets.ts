@@ -42,6 +42,9 @@ export async function getAssetsData() {
     }
 
     const coinData = CRYPTO_ASSETS.map((coin) => {
+      const marketPrice = Number(cryptoDataMap[coin.id]?.usd);
+      const price = marketPrice > 0 ? marketPrice : coin.symbol === "USDT" ? 1 : 0;
+
       return {
         symbol: coin.symbol,
         name: coin.name,
@@ -50,7 +53,7 @@ export async function getAssetsData() {
         icon_image: coin.icon_image,
         network_image: coin.network_image,
         network: coin.network,
-        price: Number(cryptoDataMap[coin.id]?.usd || 0),
+        price,
         change24h: Number(cryptoDataMap[coin.id]?.usd_24h_change || 0),
         volume_24h: Number(cryptoDataMap[coin.id]?.usd_24h_vol || 0),
         market_cap: Number(cryptoDataMap[coin.id]?.usd_market_cap || 0),
