@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react"
-import { ArrowLeft, BookOpen, Copy, Share2 } from "lucide-react"
+import { AlertCircle, ArrowLeft, BookOpen, Copy, Share2 } from "lucide-react"
 import Link from "next/link"
 import CryptoImage from "../crypto-image";
 import { User } from "@/lib/auth";
@@ -11,6 +11,7 @@ import Image from "next/image";
 interface DepositClientProps {
   coin: string
   network: string
+  price: number
   user: User
 }
 
@@ -37,8 +38,9 @@ export const TRUST_WALLET_ASSET_MAP: Record<string, string> = {
 };
 
 
-function DepositClient({ coin, network, user }: DepositClientProps) {
+function DepositClient({ coin, network, price }: DepositClientProps) {
   const [copied, setCopied] = useState(false)
+  const [amount, setAmount] = useState("")
 
   const coinDetails = CRYPTO_ASSETS.find(asset => {
     return asset.network === network || asset.symbol === coin.toLocaleUpperCase()
@@ -47,6 +49,10 @@ function DepositClient({ coin, network, user }: DepositClientProps) {
   const coinSrc = `/images/qrcodes/${coin.toLowerCase()}.png`
   const coinAddress = coinAddresses[coin.toUpperCase() as keyof typeof coinAddresses]
   const currency = coin.toUpperCase();
+  const numericAmount = Number.parseFloat(amount) || 0;
+  const usdValue = numericAmount * price;
+  const minimumCoinAmount = price > 0 ? 1000 / price : 0;
+  const hasMinimumError = numericAmount > 0 && usdValue < 1000;
   const link = `https://link.trustwallet.com/send?asset=${TRUST_WALLET_ASSET_MAP[currency]}&address=${coinAddress}`
 
   const openInTrustWallet = () => {
@@ -98,6 +104,32 @@ function DepositClient({ coin, network, user }: DepositClientProps) {
               Only send {currency} assets to this address.
             </p>
           </div>
+        </div>
+
+        <div className="space-y-2 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+          <label htmlFor="deposit-amount" className="block text-sm font-medium">
+            Deposit amount ({currency})
+          </label>
+          <input
+            id="deposit-amount"
+            type="number"
+            min={minimumCoinAmount || undefined}
+            step="any"
+            value={amount}
+            onChange={(event) => setAmount(event.target.value)}
+            placeholder={minimumCoinAmount ? minimumCoinAmount.toFixed(8) : "0.00"}
+            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700"
+          />
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            Minimum deposit: {minimumCoinAmount.toFixed(8)} {currency} ($1,000 USD)
+            {numericAmount > 0 && !hasMinimumError && ` - Current value: $${usdValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+          </p>
+          {hasMinimumError && (
+            <p role="alert" className="flex items-start gap-2 text-sm font-medium text-red-600 dark:text-red-400">
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+              This deposit is below the $1,000 USD minimum. Please enter at least {minimumCoinAmount.toFixed(8)} {currency}.
+            </p>
+          )}
         </div>
 
         {/* Coin Header */}

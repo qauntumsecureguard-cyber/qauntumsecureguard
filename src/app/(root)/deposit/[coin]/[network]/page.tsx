@@ -1,5 +1,6 @@
 import DepositClient from "@/components/clients/deposit-client";
 import { PRECIOUS_METALS } from "@/constants";
+import { getAssetsData } from "@/lib/assets";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -23,7 +24,21 @@ async function DepositCoinNetwork({ params }: Params) {
     throw redirect("/swap")
   }
 
-  return <DepositClient coin={coin} network={network} user={session.user} />
+  const { coinData } = await getAssetsData();
+  const coinDetails = coinData.find(
+    (asset) =>
+      asset.symbol.toLowerCase() === coin.toLowerCase() &&
+      (asset.network?.toLowerCase() === network.toLowerCase() || network === "native")
+  );
+
+  return (
+    <DepositClient
+      coin={coin}
+      network={network}
+      price={coinDetails?.price ?? 0}
+      user={session.user}
+    />
+  )
 }
 
 export default DepositCoinNetwork

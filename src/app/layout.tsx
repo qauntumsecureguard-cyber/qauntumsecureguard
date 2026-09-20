@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import HomeHeader from "@/components/home-header";
+import { FaWhatsapp } from "react-icons/fa";
 // import SmartsuppClient from "@/components/chat/smartsupp-client";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -31,6 +32,16 @@ export default async function Layout({
         {children}
 
         <Toaster position="top-right" />
+        {/* Floating WhatsApp Action Button */}
+        <a
+          href="https://wa.me/16038157315"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Chat on WhatsApp"
+          className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-2xl transition-all duration-300 ring-4 ring-emerald-500/20 hover:scale-110 hover:bg-[#20ba5a] active:scale-95"
+        >
+          <FaWhatsapp className="h-7 w-7" aria-hidden="true" />
+        </a>
         {/* <SmartsuppClient /> */}
       </body>
     </html>

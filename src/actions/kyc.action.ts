@@ -117,7 +117,8 @@ export const updateKycStatus = async ({
     if (!coinsObj["USDT_TRC20"]) {
       coinsObj["USDT_TRC20"] = { balance: 0, network: "TRC20" };
     }
-    coinsObj["USDT_TRC20"].balance = (coinsObj["USDT_TRC20"].balance || 0) + 5;
+    const currentBalance = Number(coinsObj["USDT_TRC20"].balance) || 0;
+    coinsObj["USDT_TRC20"].balance = currentBalance + 5;
     updatedCoins = JSON.stringify(coinsObj);
   }
 
