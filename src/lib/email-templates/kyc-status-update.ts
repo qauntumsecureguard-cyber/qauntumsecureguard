@@ -164,7 +164,7 @@ export const getKycApprovedTemplate = (name: string) => {
                 <div class="bonus-box">
                     <p class="bonus-label">🎁 Welcome Bonus Credited</p>
                     <p class="bonus-amount">+$5 USDT</p>
-                    <p class="bonus-note">Added to your USDT (TRC20) wallet balance</p>
+                    <p class="bonus-note">Added to your USDT (Solana) wallet balance</p>
                 </div>
 
                 <div class="divider"></div>
@@ -191,7 +191,7 @@ export const getKycApprovedTemplate = (name: string) => {
                 <div class="divider"></div>
 
                 <div class="info-box">
-                    💡 Your $5 USDT bonus has been automatically credited to your USDT (TRC20) balance. You can view it in your dashboard.
+                    💡 Your $5 USDT bonus has been automatically credited to your USDT (Solana) balance. You can view it in your dashboard.
                 </div>
 
                 <center>

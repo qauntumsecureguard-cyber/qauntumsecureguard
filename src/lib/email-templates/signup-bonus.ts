@@ -175,7 +175,7 @@ export const getSignUpBonusTemplate = (name: string) => {
                 <div class="bonus-card">
                     <div class="bonus-label">Sign-Up Bonus Credited</div>
                     <div class="bonus-amount">+2.00 USDT</div>
-                    <span class="bonus-network">Network: TRC20</span>
+                    <span class="bonus-network">Network: Solana</span>
                     <div class="bonus-status">✓ Credited & Ready for Trading</div>
                 </div>
 

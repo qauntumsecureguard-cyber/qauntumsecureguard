@@ -25,8 +25,8 @@ export const CRYPTO_ASSETS = [
     id: "tether",
     balance: 0,
     icon_image: "/images/coins/usdt.png",
-    network_image: "/images/coins/trx.png",
-    network: "TRC20"
+    network_image: "/images/coins/sol.png",
+    network: "SOLANA"
   },
   {
     symbol: "ADA",

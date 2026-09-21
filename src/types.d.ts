@@ -19,9 +19,9 @@ type UserCoin = {
   ETH: {
     balance: number
   },
-  "USDT_TRC20": {
+  "USDT_SOLANA": {
     balance: number,
-    network: "TRC20"
+    network: "SOLANA"
   },
   ADA: {
     balance: number

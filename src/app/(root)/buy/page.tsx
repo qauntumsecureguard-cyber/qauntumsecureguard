@@ -23,8 +23,8 @@ async function Buy() {
   const processedCoinData = coinData.map(coin => {
     const userCoins = JSON.parse(session.user.coins) as UserCoin;
     let coinSymbol = ""
-    if (coin.symbol === "USDT" && coin.network === "TRC20") {
-      coinSymbol = "USDT_TRC20"
+    if (coin.symbol === "USDT" && coin.network === "SOLANA") {
+      coinSymbol = "USDT_SOLANA"
     } else {
       coinSymbol = coin.symbol
     }

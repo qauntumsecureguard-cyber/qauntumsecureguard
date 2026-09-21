@@ -38,7 +38,7 @@ function WithdrawClient({ coin, network, coinData, user }: WithdrawClientProps) 
     coinMap.set(key, coin);
   });
 
-  const maxAmount = coinMap.get(`${coin.toLocaleUpperCase()}:${network === "trc20" ? network.toUpperCase() : network}`)?.balance || 0
+  const maxAmount = coinMap.get(`${coin.toLocaleUpperCase()}:${network === "solana" ? "SOLANA" : network}`)?.balance || 0
   const fee = 0.0
   const price = coinMap.get(`${coin}:${network}`)?.price || 0;
   const currency = coin.toUpperCase()

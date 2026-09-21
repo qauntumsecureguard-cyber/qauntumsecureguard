@@ -35,7 +35,7 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
 
   const getHref = (rootPath: string) => {
     const instanceOfPreciousMetals = PRECIOUS_METALS.find((coin) => coin.name.toLowerCase() === coinName.toLowerCase())
-    return instanceOfPreciousMetals ? "/swap" : `${rootPath}/${coin.toLowerCase() === "usdt" ? `${coin.toLowerCase()}/trc20` : `${coin.toLowerCase()}/native`}`
+    return instanceOfPreciousMetals ? "/swap" : `${rootPath}/${coin.toLowerCase() === "usdt" ? `${coin.toLowerCase()}/solana` : `${coin.toLowerCase()}/native`}`
   }
 
   return (

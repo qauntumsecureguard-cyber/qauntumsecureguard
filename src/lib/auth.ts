@@ -83,9 +83,9 @@ export const auth = betterAuth({
           ETH: {
             balance: 0,
           },
-          "USDT_TRC20": {
+          "USDT_SOLANA": {
             balance: 2,
-            network: "TRC20"
+            network: "SOLANA"
           },
           ADA: {
             balance: 0,
