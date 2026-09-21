@@ -32,7 +32,7 @@ async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <div className="flex min-h-dvh bg-white text-black">
-        <Sidebar />
+        <Sidebar unreadCount={unreadCount} />
         <div className="content-area flex-1 md:ml-64 mr-0">
           <TopNav user={session.user} />
           {children}

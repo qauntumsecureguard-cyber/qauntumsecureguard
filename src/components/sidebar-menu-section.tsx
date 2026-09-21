@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-function SidebarMenuSection() {
+function SidebarMenuSection({ unreadCount = 0 }: { unreadCount?: number }) {
   const pathname = usePathname();
 
   const handleSupportClick = (e: React.MouseEvent) => {
@@ -66,6 +66,11 @@ function SidebarMenuSection() {
                     )}
                   />
                   <span className="flex-1 truncate">{item.label}</span>
+                  {item.label === "Notifications" && unreadCount > 0 && (
+                    <span className="ml-2 flex min-w-5 h-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold leading-none text-white">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
                 </Link>
               );
             })}
