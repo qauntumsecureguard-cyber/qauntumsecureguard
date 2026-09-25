@@ -4,6 +4,7 @@ import { getAssetsData } from "@/lib/assets";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getUserDepositRequest } from "@/actions/deposit.action";
 
 type Params = {
   params: Promise<{ coin: string; network: string }>
@@ -25,6 +26,7 @@ async function DepositCoinNetwork({ params }: Params) {
   }
 
   const { coinData } = await getAssetsData();
+  const existingRequest = await getUserDepositRequest();
   const coinDetails = coinData.find(
     (asset) =>
       asset.symbol.toLowerCase() === coin.toLowerCase() &&
@@ -33,10 +35,11 @@ async function DepositCoinNetwork({ params }: Params) {
 
   return (
     <DepositClient
+      key={`${coin.toLowerCase()}-${network.toLowerCase()}`}
       coin={coin}
       network={network}
       price={coinDetails?.price ?? 0}
-      user={session.user}
+      existingRequest={existingRequest}
     />
   )
 }

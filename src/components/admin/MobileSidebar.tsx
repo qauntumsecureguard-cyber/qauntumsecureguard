@@ -1,7 +1,7 @@
 "use client";
 
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
-import { Home, Menu, PlusCircle, Award, DollarSign } from "lucide-react";
+import { Home, Menu, PlusCircle, Award, DollarSign, ArrowDownToLine } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 const ADMIN_NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: Home },
   { href: "/admin/add-balance", label: "Add Balance", icon: PlusCircle },
+  { href: "/admin/deposits", label: "Deposits", icon: ArrowDownToLine },
   { href: "/admin/grants", label: "Grant Requests", icon: Award },
   { href: "/admin/tax-refunds", label: "Tax Refunds", icon: DollarSign },
 ];
