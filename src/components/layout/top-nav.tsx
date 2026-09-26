@@ -68,6 +68,11 @@ export function TopNav({ user }: { user: User }) {
                 </Link>
               </SheetClose>
               <SheetClose asChild>
+                <Link href="/transactions" className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent">
+                  Transactions
+                </Link>
+              </SheetClose>
+              <SheetClose asChild>
                 <Link href="/notifications" className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent">
                   Notifications
                 </Link>

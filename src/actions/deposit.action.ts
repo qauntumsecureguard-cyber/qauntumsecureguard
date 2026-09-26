@@ -21,17 +21,17 @@ cloudinary.config({
   secure: true,
 });
 
-const activeStatuses = ["draft", "pending"];
-
 export async function getUserDepositRequest() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return null;
 
   await connectToDb();
-  const request = await DepositModel.findOne({
-    userId: new mongoose.Types.ObjectId(session.user.id),
-    status: { $in: activeStatuses },
-  }).sort({ updatedAt: -1 }).lean();
+  const userId = new mongoose.Types.ObjectId(session.user.id);
+  const request = await DepositModel.findOne({ userId, status: "draft" })
+    .sort({ updatedAt: -1 })
+    .lean() || await DepositModel.findOne({ userId, status: "pending" })
+    .sort({ updatedAt: -1 })
+    .lean();
 
   if (!request) return null;
   return {
@@ -77,12 +77,8 @@ export async function saveDepositDraft(input: {
 
   await connectToDb();
   const userId = new mongoose.Types.ObjectId(session.user.id);
-  const existing = await DepositModel.findOne({ userId, status: { $in: activeStatuses } })
+  const existing = await DepositModel.findOne({ userId, status: "draft" })
     .sort({ updatedAt: -1 });
-
-  if (existing?.status === "pending") {
-    return { error: "Your deposit proof is already submitted and is awaiting admin approval." };
-  }
 
   const request = existing
     ? await DepositModel.findByIdAndUpdate(existing._id, {

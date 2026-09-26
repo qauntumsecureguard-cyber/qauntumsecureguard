@@ -56,7 +56,9 @@ function DepositClient({ coin, network, price, existingRequest }: DepositClientP
   const matchingRequest = existingRequest?.coin === currency &&
     existingRequest.network === network.toUpperCase();
   const [amount, setAmount] = useState(matchingRequest ? String(existingRequest.amount) : "")
-  const [request, setRequest] = useState(matchingRequest ? existingRequest : null)
+  const [request, setRequest] = useState(
+    matchingRequest && existingRequest.status === "draft" ? existingRequest : null
+  )
   const [step, setStep] = useState<"amount" | "proof">(
     matchingRequest && existingRequest.status === "draft" ? "proof" : "amount"
   )
@@ -143,6 +145,13 @@ function DepositClient({ coin, network, price, existingRequest }: DepositClientP
 
   const hasPendingReview = existingRequest?.status === "pending";
 
+  const startAnotherDeposit = () => {
+    setRequest(null);
+    setAmount("");
+    setProofFile(null);
+    setStep("amount");
+  };
+
   return (
     <main className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white transition-all duration-300 pb-20">
       {/* Header */}
@@ -160,10 +169,10 @@ function DepositClient({ coin, network, price, existingRequest }: DepositClientP
           <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4" role="status">
             <p className="font-semibold text-amber-700 dark:text-amber-300">Deposit awaiting approval</p>
             <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
-              Your {existingRequest.amount} {existingRequest.coin} deposit (${existingRequest.usdValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}) is under review. You can start another deposit after this request is reviewed.
+              Your {existingRequest.amount} {existingRequest.coin} deposit (${existingRequest.usdValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}) is under review. You can continue with another deposit while it is being reviewed.
             </p>
-            <Link className="mt-2 inline-flex font-medium text-blue-600 dark:text-blue-400 underline" href={`/deposit/${existingRequest.coin.toLowerCase()}/${existingRequest.network.toLowerCase()}`}>
-              View pending request
+            <Link className="mt-2 inline-flex font-medium text-blue-600 dark:text-blue-400 underline" href="/transactions">
+              View transaction board
             </Link>
           </div>
         ) : null}
@@ -190,7 +199,7 @@ function DepositClient({ coin, network, price, existingRequest }: DepositClientP
           </div>
         </div>
 
-        {!hasPendingReview && request?.status !== "pending" && step === "amount" && <div className="space-y-2 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+        {request?.status !== "pending" && step === "amount" && <div className="space-y-2 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
           <label htmlFor="deposit-amount" className="block text-sm font-medium">
             Deposit amount ({currency})
           </label>
@@ -217,7 +226,7 @@ function DepositClient({ coin, network, price, existingRequest }: DepositClientP
         </div>
         }
 
-        {!hasPendingReview && request?.status !== "pending" && step === "proof" && request && (
+        {request?.status !== "pending" && step === "proof" && request && (
           <section className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-5 w-5 text-green-600" />
@@ -244,11 +253,22 @@ function DepositClient({ coin, network, price, existingRequest }: DepositClientP
           </section>
         )}
 
-        {!hasPendingReview && request?.status !== "pending" && step === "amount" && (
+        {request?.status !== "pending" && step === "amount" && (
           <button type="button" onClick={continueToProof} disabled={isSaving || !numericAmount || hasMinimumError} className="flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-blue-600 px-4 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">
             {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             {request?.status === "draft" ? "Update request and continue" : "Next"}
           </button>
+        )}
+
+        {request?.status === "pending" && (
+          <div className="space-y-3 rounded-lg border border-green-500/30 bg-green-500/10 p-4" role="status">
+            <p className="font-semibold text-green-700 dark:text-green-300">
+              Proof submitted. This deposit is awaiting admin approval.
+            </p>
+            <button type="button" onClick={startAnotherDeposit} className="min-h-11 rounded-md bg-blue-600 px-4 text-sm font-semibold text-white">
+              Start another deposit
+            </button>
+          </div>
         )}
 
         {/* Coin Header */}

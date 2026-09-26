@@ -165,6 +165,7 @@ export const SIDEBAR_MENU_GROUPS: SidebarMenuGroup[] = [
       { href: "/card", icon: CreditCard, label: "Cards" },
       { href: "/kyc", icon: UserCheck, label: "KYC Verification" },
       { href: "/notifications", icon: Bell, label: "Notifications" },
+      { href: "/transactions", icon: ArrowLeftRight, label: "Transactions" },
     ],
   },
   {
