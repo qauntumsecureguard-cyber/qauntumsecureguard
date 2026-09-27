@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowDownLeft, ArrowUpRight, ArrowLeft, ArrowLeftRight } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, ArrowLeft, ArrowLeftRight, RefreshCw } from "lucide-react";
 import type { UserTransactionRow } from "@/actions/transactions.action";
 
 type TransactionFilter = "all" | "deposit" | "withdrawal" | "swap";
@@ -23,9 +23,15 @@ export default function TransactionsClient({
   transactions: UserTransactionRow[];
 }) {
   const [filter, setFilter] = useState<TransactionFilter>("all");
+  const visibleStatuses = ["pending", "approved", "rejected", "failed"];
   const filteredTransactions = transactions.filter((transaction) =>
-    filter === "all" || transaction.type === filter
+    (transaction.type !== "deposit" || visibleStatuses.includes(transaction.status)) &&
+    (filter === "all" || transaction.type === filter)
   );
+  const statusLabel: Record<string, string> = {
+    approved: "Successful",
+    rejected: "Failed",
+  };
 
   return (
     <main className="min-h-screen bg-gray-100 p-4 pb-24 text-gray-900 dark:bg-gray-900 dark:text-white md:p-6 md:pb-8">
@@ -89,7 +95,7 @@ export default function TransactionsClient({
                     </td>
                     <td className="px-4 py-4">
                       <span className="inline-flex items-center gap-2">
-                        {transaction.type === "deposit" ? <ArrowDownLeft className="h-4 w-4 text-green-600" /> : transaction.type === "withdrawal" ? <ArrowUpRight className="h-4 w-4 text-orange-600" /> : <ArrowLeftRight className="h-4 w-4 text-blue-600" />}
+                        {transaction.type === "deposit" ? <ArrowDownLeft className="h-4 w-4 text-green-600" /> : transaction.type === "withdrawal" ? <ArrowUpRight className="h-4 w-4 text-orange-600" /> : <RefreshCw className="h-4 w-4 text-blue-600" />}
                         <span className="capitalize">{transaction.type}</span>
                       </span>
                     </td>
@@ -99,7 +105,7 @@ export default function TransactionsClient({
                     </td>
                     <td className="px-4 py-4">
                       <span className={`rounded-full border px-2.5 py-1 text-xs font-semibold capitalize ${statusStyle[transaction.status] || statusStyle.submitted}`}>
-                        {transaction.status}
+                        {statusLabel[transaction.status] || transaction.status}
                       </span>
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">{new Date(transaction.createdAt).toLocaleString()}</td>

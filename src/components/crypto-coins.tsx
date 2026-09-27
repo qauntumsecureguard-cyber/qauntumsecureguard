@@ -3,7 +3,7 @@
 import Link from "next/link";
 import CryptoImage from "./crypto-image";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn, formatUsdUnitPrice } from "@/lib/utils";
 
 type CryptoCoinsProps = {
   coinData: CryptoData[],
@@ -67,16 +67,13 @@ function CryptoCoins({ coinData, page }: CryptoCoinsProps) {
                   <div className="flex items-center space-x-2">
                     <span className="font-semibold text-sm">{asset.symbol}</span>
                     {asset.network && (
-                      <span className={cn("text-xs bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded", isHomePage && "dark:bg-gray-800")}>
+                      <span className={cn("text-xs bg-gray-400/30 px-2 py-1 rounded", isHomePage && "dark:bg-gray-800")}>
                         {asset.network}
                       </span>
                     )}
                   </div>
                   <div className="text-xs text-gray-600 dark:text-gray-400">
-                    ${asset.price.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}{" "}
+                    ${formatUsdUnitPrice(asset.price)}{" "}
                     <span
                       className={isPositive ? "text-green-500" : "text-red-500"}
                     >

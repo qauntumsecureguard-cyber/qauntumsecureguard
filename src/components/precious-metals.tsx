@@ -2,7 +2,7 @@
 
 import CryptoImage from "./crypto-image";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn, formatUsdUnitPrice } from "@/lib/utils";
 import Link from "next/link";
 
 type PreciousMetalsProps = {
@@ -66,10 +66,7 @@ function PreciousMetals({ metalData, page }: PreciousMetalsProps) {
                     <span className="font-semibold text-sm">{asset.symbol} ({asset.name})</span>
                   </div>
                   <div className="text-xs text-gray-600 dark:text-gray-400">
-                    ${asset.price.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
+                    ${formatUsdUnitPrice(asset.price)}
                   </div>
                 </div>
               </div>

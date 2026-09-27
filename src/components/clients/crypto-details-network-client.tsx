@@ -1,12 +1,12 @@
 "use client";
 
-import { ChevronLeft, TrendingUp, CreditCard, ArrowUp, ArrowDown, ArrowLeftRight, ExternalLink } from 'lucide-react'
+import { ChevronLeft, TrendingUp, CreditCard, ArrowUp, ArrowDown, RefreshCw, ExternalLink } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { formatDate } from '@/lib/utils';
 import CryptoImage from '../crypto-image';
 import Link from "next/link";
-import { cn } from '@/lib/utils';
+import { cn, formatUsdUnitPrice } from '@/lib/utils';
 import { PRECIOUS_METALS } from '@/constants';
 
 interface CryptoDetailsNetworkClientProps {
@@ -116,7 +116,7 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
               href="/swap"
               className="h-16 w-16 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-[#2e3847] flex items-center justify-center"
             >
-              <ArrowLeftRight className="text-xl w-5 h-5" />
+              <RefreshCw className="text-xl w-5 h-5" />
             </Link>
             <span className="mt-2 text-sm">Swap</span>
           </div>
@@ -170,6 +170,14 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
                 // Determine transaction direction & positive/negative state
                 let isPositive = false;
                 let title = tx.title || "";
+                if (tx.type === "deposit") {
+                  const normalizedTitle = title.toLowerCase();
+                  title = normalizedTitle.includes("approv") || normalizedTitle.includes("success")
+                    ? "Deposit Successful"
+                    : normalizedTitle.includes("reject") || normalizedTitle.includes("fail")
+                      ? "Deposit Failed"
+                      : "Deposit Pending";
+                }
 
                 if (tx.type === "withdraw") {
                   isPositive = false;
@@ -207,6 +215,13 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
                 }
 
                 const amountText = `${isPositive ? "+" : "-"}${amount} ${currentCoinUpper}`;
+                const amountColorClass = tx.type === "deposit"
+                  ? title === "Deposit Successful"
+                    ? "text-green-500"
+                    : title === "Deposit Failed"
+                      ? "text-red-500"
+                      : "text-gray-300/70"
+                  : isPositive ? "text-green-500" : "text-red-500";
 
                 return (
                   <div
@@ -237,7 +252,7 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
 
                     {/* Amount */}
                     <div className="text-right">
-                      <p className={`font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}>
+                      <p className={`font-semibold ${amountColorClass}`}>
                         {amountText}
                       </p>
                     </div>
@@ -287,10 +302,7 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
               <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Current Price</p>
                 <p className="text-xl font-bold">
-                  ${coinDetails.coinPrice.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
+                  ${formatUsdUnitPrice(coinDetails.coinPrice)}
                 </p>
               </div>
               <div className="bg-white dark:bg-gray-800 rounded-lg p-4">

@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Eye, Bell, ArrowLeft, ArrowUpRight, ArrowDownLeft, ClipboardCheck, ShoppingBag, ArrowLeftRight } from "lucide-react"
+import { Eye, Bell, ArrowLeft, ArrowUpRight, ArrowDownLeft, ClipboardCheck, ShoppingBag, RefreshCw } from "lucide-react"
 import {
   markNotificationAsRead,
   markAllNotificationsAsRead,
@@ -14,7 +14,7 @@ import { PRECIOUS_METALS } from "@/constants";
 const getIcon = (type: string) => {
   switch (type) {
     case "swap":
-      return <ArrowLeftRight className="w-5 h-5 text-blue-500" />
+      return <RefreshCw className="w-5 h-5 text-blue-500" />
     case "deposit":
       return <ArrowDownLeft className="w-5 h-5 text-green-500" />
     case "withdraw":

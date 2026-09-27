@@ -9,6 +9,18 @@ export const getCoinKey = (asset: { symbol: string, network: string | null }) =>
   return asset.network ? `${asset.symbol}_${asset.network}` : asset.symbol;
 }
 
+export function formatUsdUnitPrice(price: number) {
+  const absolutePrice = Math.abs(price);
+  const maximumFractionDigits = absolutePrice > 0 && absolutePrice < 1
+    ? Math.min(15, Math.max(5, Math.ceil(-Math.log10(absolutePrice)) + 7))
+    : 2;
+
+  return price.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits,
+  });
+}
+
 export function formatDate(dateString: string) {
   const date = new Date(dateString);
 

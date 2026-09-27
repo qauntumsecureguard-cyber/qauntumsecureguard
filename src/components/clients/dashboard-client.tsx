@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Search, Eye, EyeOff, ArrowUp, ArrowDown, CreditCard, ArrowLeftRight, Check, ChevronDown, ArrowRight, Gift, Award, DollarSign, Star } from "lucide-react";
+import { Search, Eye, EyeOff, ArrowUp, ArrowDown, CreditCard, RefreshCw, Check, ChevronDown, ArrowRight, Gift, Award, DollarSign, Star } from "lucide-react";
 import Link from "next/link";
 import CryptoCoins from "@/components/crypto-coins";
 import PreciousMetals from "@/components/precious-metals";
@@ -225,7 +225,7 @@ function DashboardClient({ coinData, user }: { coinData: CryptoData[], user: Use
                     dark:hover:bg-gray-700
                   "
                 >
-                  <ArrowLeftRight className="h-5 w-5" />
+                  <RefreshCw className="h-5 w-5" />
                 </Link>
 
                 <span className="mt-2 text-center text-xs font-medium sm:text-sm">
