@@ -28,14 +28,14 @@ export interface DepositRequest {
 }
 
 const coinAddresses = {
-  BTC: "bc1q95h4ve6437mcusf700vk2w6tf9tv9ajzswtusa",
-  ETH: "0x71C7656EC7ab88b098defB751B7401B5f6d8976F",
-  USDT: "AvVng3RjJ6WUNWgDxSoMVMpMwQCSBJpzmYcPB1TzMGty",
-  XRP: "rBoAWvbTiPejkgPyKMKXjyUJvnFHpD9GsX",
-  SOL: "AvVng3RjJ6WUNWgDxSoMVMpMwQCSBJpzmYcPB1TzMGty",
-  DOGE: "DMFeF26WKB7RXFeqkv7BCvKmMgxSiWzuPt",
-  XLM: "GBYO2N5YRXTY5J5XPPCVDXXDF6HD4NFMMVIS2HUPDJWT54TQ5GMWK47X",
-  ADA: "addr1q838j5jw3fjky8c3sdadvuehp528cwvd66drjwfnjqwrxgrmgh34p7ydys5fe3pe8xg95dmpf0fj8mks4kr5npzeu6dsrh6fey"
+  BTC: "bc1q4gzzzh6pjyec39uyumtxs2g832lkpara4yn9h4",
+  ETH: "0x7d9572DAc62d70e63F0279054c4ab9B2B481323a",
+  USDT: "EEV2arTtrn1m1jkMM8y7mSej4LdKBX4C1DGYiLq67f6d",
+  XRP: "r3mtoHaD18Nj4Xd6PTNcrow5mgNAT1Eukg",
+  SOL: "EEV2arTtrn1m1jkMM8y7mSej4LdKBX4C1DGYiLq67f6d",
+  DOGE: "DUR6jYHx2XrTi4GrCav18Q9MBvEDfJtueg",
+  XLM: "GCHI6J4L4ZSNLILQUTNKBAGTVYO6FVSVSWIFGPGGVPBHG5DXD4VG4HZK",
+  ADA: "addr1qxk2x3v2r7w3z53m0wl3m488v9ug8muzluqmxst45309ej2csk5j50vqfhqennau8h8f4n473xdrez4n8fr04cmvy2csw2gtl7"
 }
 
 export const TRUST_WALLET_ASSET_MAP: Record<string, string> = {
