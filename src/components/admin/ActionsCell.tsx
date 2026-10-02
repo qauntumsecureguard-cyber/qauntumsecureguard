@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { AlertTriangle, MoreHorizontal } from 'lucide-react'
 import { useState } from 'react'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog'
+import { deleteUser } from '@/actions/user.action'
 
 type ActionsCellProps = {
   userId: string,
@@ -80,20 +81,24 @@ function ActionsCell({ userId, userBanned }: ActionsCellProps) {
     )
   }
 
-  function handleDeleteUser(userId: string) {
-    authClient.admin.removeUser(
-      { userId },
-      {
-        onError: error => {
-          toast.error(error.error.message || "Failed to delete user")
-        },
-        onSuccess: () => {
-          toast.success("User deleted")
-          router.refresh()
-        },
+  async function handleDeleteUser(userId: string) {
+    setIsDeleting(true)
+    try {
+      const result = await deleteUser(userId)
+      if (result.success) {
+        toast.success("User and all their data deleted")
+        setShowDeleteDialog(false)
+        router.refresh()
+      } else {
+        toast.error(result.error || "Failed to delete user")
       }
-    )
+    } catch {
+      toast.error("An unexpected error occurred")
+    } finally {
+      setIsDeleting(false)
+    }
   }
+
 
   return (
     <>

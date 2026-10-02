@@ -10,6 +10,7 @@ import { NotificationCategory, PRECIOUS_METALS, METAL_PRICES } from "@/constants
 import { sendEmail } from "@/lib/mail";
 import { getCardApplicationTemplate } from "@/lib/email-templates/card-application";
 import { getCardStatusUpdateTemplate } from "@/lib/email-templates/card-status-update";
+import { getAssetsData } from "@/lib/assets";
 
 // Helper to generate 16-digit card number, expiry date (4 years), and CVV
 function generateCardDetails(fullName: string) {
@@ -196,7 +197,22 @@ export async function getAllCardsAdmin() {
       .sort({ createdAt: -1 })
       .lean();
 
-    const userMap = new Map<string, { email: string; name: string; estimatedBalance: number; coins: any }>();
+    const { coinData, metalData } = await getAssetsData();
+    // Fallback prices in case CoinGecko is rate-limited or down
+    const FALLBACK_PRICES: Record<string, number> = {
+      BTC: 97000, ETH: 3500, USDT: 1, ADA: 0.45, XLM: 0.12,
+      XRP: 0.55, DOGE: 0.08, SOL: 145,
+    };
+    const priceMap: Record<string, number> = { ...FALLBACK_PRICES };
+    for (const coin of coinData) {
+      if (coin.price > 0) priceMap[coin.symbol] = coin.price;
+    }
+    for (const metal of metalData) {
+      const p = metal.price || METAL_PRICES[metal.symbol] || 0;
+      if (p > 0) priceMap[metal.symbol] = p;
+    }
+
+    const userMap = new Map<string, { email: string; name: string; estimatedBalance: number; coins: any; coinHoldings: { symbol: string; balance: number; usdValue: number }[] }>();
     try {
       const listOfUsers = await auth.api.listUsers({
         query: { limit: 200 },
@@ -205,17 +221,34 @@ export async function getAllCardsAdmin() {
       if (listOfUsers?.users) {
         for (const u of listOfUsers.users) {
           let estimatedBalance = 0;
-          let parsedCoins: any = {};
+          let parsedCoins: Record<string, any> = {};
+          const coinHoldings: { symbol: string; balance: number; usdValue: number }[] = [];
+
           try {
             parsedCoins = JSON.parse((u as any).coins || "{}");
-            // Estimate balance from metals and USDT
-            for (const metal of PRECIOUS_METALS) {
-              const metalBal = Number(parsedCoins[metal.symbol]?.balance || 0);
-              const price = METAL_PRICES[metal.symbol] || 0;
-              estimatedBalance += metalBal * price;
+            // Use a Map to merge holdings with the same base symbol
+            const holdingsMap = new Map<string, { balance: number; usdValue: number }>();
+            for (const [key, val] of Object.entries(parsedCoins)) {
+              const coinObj = val as { balance?: number | string };
+              const bal = Number(coinObj?.balance || 0);
+              if (isNaN(bal) || bal <= 0) continue;
+
+              // Strip network suffixes → USDT_SOLANA, USDT_TRC20 → USDT
+              const baseSymbol = key.replace(/_(SOLANA|TRC20|ERC20|BEP20|BSC|MATIC|AVAX|ARBITRUM|OPTIMISM|BASE)$/i, "");
+              const price = priceMap[baseSymbol] ?? (baseSymbol === "USDT" ? 1 : 0);
+              const usdVal = bal * price;
+              estimatedBalance += usdVal;
+
+              const existing = holdingsMap.get(baseSymbol);
+              if (existing) {
+                existing.balance += bal;
+                existing.usdValue += usdVal;
+              } else {
+                holdingsMap.set(baseSymbol, { balance: bal, usdValue: usdVal });
+              }
             }
-            if (parsedCoins["USDT_SOLANA"]?.balance) {
-              estimatedBalance += Number(parsedCoins["USDT_SOLANA"].balance);
+            for (const [symbol, data] of holdingsMap.entries()) {
+              coinHoldings.push({ symbol, balance: data.balance, usdValue: data.usdValue });
             }
           } catch {
             // ignore
@@ -226,6 +259,7 @@ export async function getAllCardsAdmin() {
             name: u.name,
             estimatedBalance,
             coins: parsedCoins,
+            coinHoldings,
           });
         }
       }
@@ -257,6 +291,7 @@ export async function getAllCardsAdmin() {
         userAccountEmail: userInfo?.email || "",
         userAccountName: userInfo?.name || "",
         userEstimatedBalance: userInfo?.estimatedBalance || 0,
+        coinHoldings: userInfo?.coinHoldings || [],
         approvedAt: c.approvedAt ? c.approvedAt.toISOString() : null,
         submittedOn: new Date(c.createdAt).toLocaleDateString("en-GB", {
           day: "2-digit",

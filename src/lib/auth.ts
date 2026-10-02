@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import mongoose from "mongoose";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { nextCookies } from "better-auth/next-js";
-import { admin } from "better-auth/plugins";
+import { admin, emailOTP } from "better-auth/plugins";
 import connectToDb from "@/config/connectToDb";
 import { sendEmail } from "./mail";
 import { getEmailVerificationTemplate } from "./email-templates/email-verification";
@@ -125,13 +125,6 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignIn: true,
     autoSignInAfterVerification: false,
-    sendVerificationEmail: async ({ user, url }) => {
-      await sendEmail({
-        to: user.email,
-        subject: "Verify Your Email - Qauntum Secure Guard",
-        html: getEmailVerificationTemplate(user.name, url)
-      })
-    },
     afterEmailVerification: async (user) => {
       try {
         await createNotification({
@@ -232,7 +225,22 @@ export const auth = betterAuth({
   },
   plugins: [
     nextCookies(),
-    admin()
+    admin(),
+    emailOTP({
+      async sendVerificationOTP({ email, otp, type }) {
+        if (type === "email-verification") {
+          await sendEmail({
+            to: email,
+            subject: `${otp} is your verification code - Qauntum Secure Guard`,
+            html: getEmailVerificationTemplate(otp),
+          });
+        }
+      },
+      sendVerificationOnSignUp: true,
+      expiresIn: 300,
+      otpLength: 6,
+      overrideDefaultEmailVerification: true,
+    }),
   ]
 });
 

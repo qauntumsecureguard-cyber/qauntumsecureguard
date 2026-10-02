@@ -8,6 +8,7 @@ import Link from "next/link"
 import { toast } from "sonner"
 import { resolveLoginEmail } from "@/actions/auth.action"
 import { authClient } from "@/lib/auth-client"
+import { EmailOtpModal } from "@/components/auth/EmailOtpModal"
 
 function Login() {
   const searchParams = useSearchParams()
@@ -16,6 +17,8 @@ function Login() {
   const [rememberMe, setRememberMe] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [showOtpModal, setShowOtpModal] = useState(false)
+  const [unverifiedEmail, setUnverifiedEmail] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -44,7 +47,18 @@ function Login() {
       }, {
         onError(context) {
           setIsLoading(false)
-          toast.error(context.error.message || "An error occured. Please try again.")
+          const errorMsg = context.error.message || "An error occurred. Please try again."
+          if (
+            errorMsg.toLowerCase().includes("verify") ||
+            errorMsg.toLowerCase().includes("email not verified") ||
+            context.error.status === 403
+          ) {
+            setUnverifiedEmail(resolvedUser.email!)
+            setShowOtpModal(true)
+            toast.error("Please verify your email with the code sent to your inbox.")
+            return
+          }
+          toast.error(errorMsg)
         },
         onSuccess() {
           setIsLoading(false)
@@ -185,6 +199,17 @@ function Login() {
           </Link>
         </p>
       </div>
+
+      {/* OTP Verification Modal */}
+      <EmailOtpModal
+        isOpen={showOtpModal}
+        email={unverifiedEmail}
+        onClose={() => setShowOtpModal(false)}
+        onSuccess={() => {
+          setShowOtpModal(false)
+          toast.success("Email verified! Please sign in.")
+        }}
+      />
     </>
   )
 }

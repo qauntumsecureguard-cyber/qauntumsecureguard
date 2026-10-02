@@ -153,6 +153,19 @@ async function AdminCardsPage() {
                           </span>
                         )}
                       </div>
+                      {card.coinHoldings && card.coinHoldings.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1 max-w-[220px]">
+                          {card.coinHoldings.map((h: any, idx: number) => (
+                            <span
+                              key={idx}
+                              className="inline-block text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 font-mono"
+                              title={`$${h.usdValue.toFixed(2)} USD`}
+                            >
+                              {h.balance} {h.symbol}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </td>
 
                     {/* Generated Virtual Card Details */}
