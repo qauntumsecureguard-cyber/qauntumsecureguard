@@ -9,6 +9,7 @@ import Deposit from "@/models/deposit.model";
 import Grant from "@/models/grant.model";
 import TaxRefund from "@/models/tax-refund.model";
 import Notification from "@/models/notification.model";
+import Withdrawal from "@/models/withdrawal.model";
 
 /**
  * Delete a single user and all their associated data.
@@ -31,6 +32,7 @@ export async function deleteUser(userId: string) {
       Grant.deleteMany({ userId }),
       TaxRefund.deleteMany({ userId }),
       Notification.deleteMany({ userId }),
+      Withdrawal.deleteMany({ userId }),
     ]);
 
     // 2. Delete the user from better-auth (also removes sessions/accounts)

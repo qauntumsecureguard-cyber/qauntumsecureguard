@@ -4,6 +4,7 @@ import connectToDb from "@/config/connectToDb";
 import { auth } from "@/lib/auth";
 import DepositModel from "@/models/deposit.model";
 import NotificationModel from "@/models/notification.model";
+import WithdrawalModel from "@/models/withdrawal.model";
 import mongoose from "mongoose";
 import { headers } from "next/headers";
 
@@ -16,6 +17,8 @@ export interface UserTransactionRow {
   amount: number;
   receivedAmount?: number;
   status: string;
+  txHash?: string;
+  recipientAddress?: string;
   createdAt: string;
 }
 
@@ -27,7 +30,7 @@ export async function getUserTransactionsBoard() {
   const userId = new mongoose.Types.ObjectId(session.user.id);
   const [deposits, withdrawals, swaps] = await Promise.all([
     DepositModel.find({ userId }).sort({ createdAt: -1 }).lean(),
-    NotificationModel.find({ userId, type: "withdraw" }).sort({ createdAt: -1 }).lean(),
+    WithdrawalModel.find({ userId }).sort({ createdAt: -1 }).lean(),
     NotificationModel.find({ userId, type: "swap" }).sort({ createdAt: -1 }).lean(),
   ]);
 
@@ -41,23 +44,18 @@ export async function getUserTransactionsBoard() {
     createdAt: new Date(deposit.createdAt).toISOString(),
   }));
 
-  const withdrawalRows: UserTransactionRow[] = withdrawals.map((withdrawal) => {
-    const title = withdrawal.title?.toLowerCase() || "";
-    const description = withdrawal.description?.toLowerCase() || "";
-    const status = title.includes("fail") || description.includes("fail")
-      ? "failed"
-      : "submitted";
-
-    return {
-      id: (withdrawal._id as mongoose.Types.ObjectId).toString(),
-      coin: withdrawal.from || "Unknown",
-      network: "",
-      type: "withdrawal",
-      amount: Number(withdrawal.fromAmount) || 0,
-      status,
-      createdAt: new Date(withdrawal.createdAt).toISOString(),
-    };
-  });
+  // Dedicated Withdrawal records with txHash & real status ("pending", "approved", "completed", "rejected")
+  const withdrawalRows: UserTransactionRow[] = withdrawals.map((w) => ({
+    id: (w._id as mongoose.Types.ObjectId).toString(),
+    coin: w.coin,
+    network: w.network,
+    type: "withdrawal",
+    amount: w.amount,
+    status: w.status,
+    txHash: w.txHash,
+    recipientAddress: w.recipientAddress,
+    createdAt: new Date(w.createdAt).toISOString(),
+  }));
 
   const swapRows: UserTransactionRow[] = swaps.map((swap) => ({
     id: (swap._id as mongoose.Types.ObjectId).toString(),
