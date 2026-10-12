@@ -1,4 +1,4 @@
-import { Home, Cog, CreditCard, ImageIcon, Smartphone, TrendingUp, Shield, Globe, Send, CheckCircle2, Lock, User, UserCheck, Star, Award, DollarSign, LayoutDashboard, ArrowDownLeft, ArrowUpRight, RefreshCw, ShoppingCart, Bell, Wallet, LucideIcon, ArrowLeftRight } from "lucide-react";
+import { Home, Cog, CreditCard, ImageIcon, Smartphone, TrendingUp, Shield, Globe, Send, CheckCircle2, Lock, User, UserCheck, Star, Award, DollarSign, LayoutDashboard, ArrowDownLeft, ArrowUpRight, RefreshCw, ShoppingCart, Bell, Wallet, LucideIcon, ArrowLeftRight, Headphones } from "lucide-react";
 
 export const CRYPTO_ASSETS = [
   {
@@ -188,7 +188,8 @@ export const SIDEBAR_MENU_GROUPS: SidebarMenuGroup[] = [
   {
     title: "ACCOUNT",
     items: [
-      { href: "/settings", icon: Cog, label: "Settings" }
+      { href: "/settings", icon: Cog, label: "Settings" },
+      { href: "#support", icon: Headphones, label: "24/7 Support", isAction: true },
     ],
   },
 ];

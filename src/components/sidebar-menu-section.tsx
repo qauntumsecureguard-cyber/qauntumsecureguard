@@ -1,20 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import { SIDEBAR_MENU_GROUPS } from "@/constants";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ContactSupportModal from "./modals/contact-support-modal";
 
 function SidebarMenuSection({ unreadCount = 0 }: { unreadCount?: number }) {
   const pathname = usePathname();
+  const [showSupportModal, setShowSupportModal] = useState(false);
 
   const handleSupportClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (typeof window !== "undefined" && (window as any).smartsupp) {
-      (window as any).smartsupp("chat:open");
-    } else {
-      window.location.href = "/support";
-    }
+    setShowSupportModal(true);
   };
 
   return (
@@ -77,6 +76,11 @@ function SidebarMenuSection({ unreadCount = 0 }: { unreadCount?: number }) {
           </nav>
         </div>
       ))}
+
+      <ContactSupportModal
+        isOpen={showSupportModal}
+        onClose={() => setShowSupportModal(false)}
+      />
     </div>
   );
 }

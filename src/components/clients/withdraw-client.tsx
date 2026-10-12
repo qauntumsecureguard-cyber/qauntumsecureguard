@@ -19,6 +19,7 @@ import { createWithdrawalRequest } from "@/actions/withdrawal.action";
 import { User } from "@/lib/auth";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
+import ContactSupportModal from "../modals/contact-support-modal";
 
 interface TransactionPreview {
   recipient: string;
@@ -61,6 +62,7 @@ function WithdrawClient({
   // Modals state
   const [showCardRequiredModal, setShowCardRequiredModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showContactSupportModal, setShowContactSupportModal] = useState(false);
   const [successData, setSuccessData] = useState<WithdrawalSuccessData | null>(null);
   const [copiedHash, setCopiedHash] = useState(false);
 
@@ -150,11 +152,7 @@ function WithdrawClient({
   };
 
   const handleContactSupport = () => {
-    if (typeof window !== "undefined" && (window as any).smartsupp) {
-      (window as any).smartsupp("chat:open");
-    } else {
-      window.location.href = "mailto:qauntumsecureguard@gmail.com?subject=Withdrawal%20Verification%20Hash%20" + (successData?.txHash || "");
-    }
+    setShowContactSupportModal(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -564,6 +562,16 @@ function WithdrawClient({
           </div>
         </div>
       )}
+
+      {/* 3. CONTACT SUPPORT MODAL (Gmail, Telegram, WhatsApp) */}
+      <ContactSupportModal
+        isOpen={showContactSupportModal}
+        onClose={() => setShowContactSupportModal(false)}
+        txHash={successData?.txHash}
+        amount={successData?.amount}
+        coin={successData?.coin}
+        recipientAddress={successData?.recipientAddress}
+      />
     </main>
   );
 }

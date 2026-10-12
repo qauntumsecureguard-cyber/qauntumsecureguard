@@ -1,13 +1,15 @@
 "use client"
 
+import { useState } from "react"
 import { ArrowLeft, DollarSign, Heart, RefreshCw, Award } from "lucide-react"
 import Link from "next/link"
+import ContactSupportModal from "@/components/modals/contact-support-modal"
 
 function Benefits() {
+  const [showSupportModal, setShowSupportModal] = useState(false)
+
   const openChat = () => {
-    if (typeof window !== "undefined" && (window as any).smartsupp) {
-      (window as any).smartsupp('chat:open')
-    }
+    setShowSupportModal(true)
   }
 
   return (
@@ -85,6 +87,11 @@ function Benefits() {
           </button>
         </div>
       </div>
+
+      <ContactSupportModal
+        isOpen={showSupportModal}
+        onClose={() => setShowSupportModal(false)}
+      />
     </div>
   )
 }
