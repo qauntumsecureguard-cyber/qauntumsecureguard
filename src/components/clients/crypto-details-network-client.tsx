@@ -156,8 +156,18 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
         {/* Tab Content */}
         {activeTab === 'transactions' ? (
           <div className="space-y-4">
-            {(JSON.parse(transactions) as NotificationType[]).length > 0
-              ? (JSON.parse(transactions) as NotificationType[]).map((tx) => {
+            {(() => {
+              const allTxs = (JSON.parse(transactions) as NotificationType[]);
+
+              if (allTxs.length === 0) {
+                return (
+                  <div className="text-center text-gray-500 dark:text-gray-400 py-8">
+                    No transactions found
+                  </div>
+                );
+              }
+
+              return allTxs.map((tx) => {
                 const currentCoinUpper = coin.toUpperCase();
                 const fromUpper = (tx.from || "").toUpperCase();
                 const toUpper = (tx.to || "").toUpperCase();
@@ -167,32 +177,56 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
                   return symbol.split("_")[0].toUpperCase();
                 };
 
-                // Determine transaction direction & positive/negative state
+                const lowerTitle = (tx.title || "").toLowerCase();
+                const lowerDesc = (tx.description || "").toLowerCase();
+                const isWithdrawal =
+                  tx.type === "withdraw" ||
+                  lowerTitle.includes("withdraw") ||
+                  lowerDesc.includes("withdraw");
+
                 let isPositive = false;
                 let title = tx.title || "";
-                if (tx.type === "deposit") {
+                let withdrawalStatus: "approved" | "pending" | "rejected" = "pending";
+
+                if (isWithdrawal) {
+                  isPositive = false;
+                  const isApproved =
+                    lowerTitle.includes("approv") ||
+                    lowerTitle.includes("complet") ||
+                    lowerTitle.includes("success") ||
+                    lowerDesc.includes("approv");
+                  const isRejected =
+                    lowerTitle.includes("reject") ||
+                    lowerTitle.includes("fail") ||
+                    lowerDesc.includes("reject");
+
+                  if (isApproved) {
+                    withdrawalStatus = "approved";
+                    title = "Withdrawal Approved";
+                  } else if (isRejected) {
+                    withdrawalStatus = "rejected";
+                    title = "Withdrawal Rejected";
+                  } else {
+                    withdrawalStatus = "pending";
+                    title = "Withdrawal Pending";
+                  }
+                } else if (tx.type === "deposit") {
                   const normalizedTitle = title.toLowerCase();
                   title = normalizedTitle.includes("approv") || normalizedTitle.includes("success")
                     ? "Deposit Successful"
                     : normalizedTitle.includes("reject") || normalizedTitle.includes("fail")
                       ? "Deposit Failed"
                       : "Deposit Pending";
-                }
-
-                if (tx.type === "withdraw") {
-                  isPositive = false;
-                  if (!title) title = "Withdrawal";
+                  isPositive = true;
                 } else if (
-                  tx.type === "deposit" ||
                   tx.type === "recieve" ||
                   tx.type === "buy" ||
                   tx.type === "metal_buy"
                 ) {
                   isPositive = true;
                   if (!title) {
-                    title = tx.type === "deposit" ? "Deposit Received" :
-                      tx.type === "buy" ? "Crypto Purchased" :
-                        tx.type === "metal_buy" ? "Precious Metal Purchased" : "Balance Received";
+                    title = tx.type === "buy" ? "Crypto Purchased" :
+                      tx.type === "metal_buy" ? "Precious Metal Purchased" : "Balance Received";
                   }
                 } else if (tx.type === "swap") {
                   const isIncoming = toUpper === currentCoinUpper || (toUpper.includes(currentCoinUpper) && !fromUpper.includes(currentCoinUpper));
@@ -211,17 +245,29 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
                 if (tx.type === "swap") {
                   amount = isPositive ? (tx.toAmount ?? tx.fromAmount ?? 0) : (tx.fromAmount ?? tx.toAmount ?? 0);
                 } else {
-                  amount = tx.toAmount ?? tx.fromAmount ?? 0;
+                  amount = tx.fromAmount ?? tx.toAmount ?? 0;
                 }
 
                 const amountText = `${isPositive ? "+" : "-"}${amount} ${currentCoinUpper}`;
-                const amountColorClass = tx.type === "deposit"
-                  ? title === "Deposit Successful"
+
+                let amountColorClass = "text-red-500";
+                if (isWithdrawal) {
+                  if (withdrawalStatus === "approved") {
+                    amountColorClass = "text-red-500";
+                  } else if (withdrawalStatus === "pending") {
+                    amountColorClass = "text-amber-500 dark:text-amber-400";
+                  } else {
+                    amountColorClass = "text-gray-400 dark:text-gray-500 line-through";
+                  }
+                } else if (tx.type === "deposit") {
+                  amountColorClass = title === "Deposit Successful"
                     ? "text-green-500"
                     : title === "Deposit Failed"
                       ? "text-red-500"
-                      : "text-gray-300/70"
-                  : isPositive ? "text-green-500" : "text-red-500";
+                      : "text-gray-300/70";
+                } else {
+                  amountColorClass = isPositive ? "text-green-500" : "text-red-500";
+                }
 
                 return (
                   <div
@@ -231,8 +277,18 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
                     <div className="flex items-center gap-4">
                       {/* Icon */}
                       <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center ${isPositive ? "bg-green-500" : "bg-red-500"
-                          }`}
+                        className={cn(
+                          "w-10 h-10 rounded-full flex items-center justify-center",
+                          isWithdrawal
+                            ? withdrawalStatus === "approved"
+                              ? "bg-red-500"
+                              : withdrawalStatus === "pending"
+                                ? "bg-amber-500"
+                                : "bg-gray-500"
+                            : isPositive
+                              ? "bg-green-500"
+                              : "bg-red-500"
+                        )}
                       >
                         {isPositive ? (
                           <TrendingUp className="text-white" size={20} />
@@ -243,7 +299,23 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
 
                       {/* Details */}
                       <div>
-                        <h4 className="font-semibold">{title}</h4>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-semibold">{title}</h4>
+                          {isWithdrawal && (
+                            <span
+                              className={cn(
+                                "text-[11px] font-semibold px-2 py-0.5 rounded-full border capitalize",
+                                withdrawalStatus === "approved"
+                                  ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                  : withdrawalStatus === "pending"
+                                    ? "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                                    : "border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400"
+                              )}
+                            >
+                              {withdrawalStatus}
+                            </span>
+                          )}
+                        </div>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
                           {formatDate(tx.createdAt)}
                         </p>
@@ -257,13 +329,9 @@ function CryptoDetailsNetworkClient({ coin, transactions, coinDetails }: CryptoD
                       </p>
                     </div>
                   </div>
-                )
-              }) : (
-                <div className="text-center text-gray-500 dark:text-gray-400 py-8">
-                  No transactions found
-                </div>
-              )
-            }
+                );
+              });
+            })()}
           </div>
         ) : (
           <div className="space-y-4">

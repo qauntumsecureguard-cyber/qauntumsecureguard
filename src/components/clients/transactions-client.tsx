@@ -194,7 +194,9 @@ export default function TransactionsClient({
                           statusStyle[transaction.status] || statusStyle.submitted
                         }`}
                       >
-                        {statusLabel[transaction.status] || transaction.status}
+                        {transaction.type === "withdrawal"
+                          ? (transaction.status === "approved" || transaction.status === "completed" ? "Approved" : transaction.status === "rejected" ? "Failed" : "Pending")
+                          : (statusLabel[transaction.status] || transaction.status)}
                       </span>
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400 text-xs">

@@ -40,14 +40,14 @@ export default function WithdrawalStatusButton({
     <div className="flex flex-col gap-1.5 min-w-[100px]">
       {currentStatus !== "approved" && currentStatus !== "completed" && (
         <button
-          onClick={() => handleUpdate("completed")}
+          onClick={() => handleUpdate("approved")}
           disabled={!!loading}
           className="w-full py-1.5 px-2.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-500 text-xs font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-1 cursor-pointer"
         >
-          {loading === "completed" ? (
+          {loading === "approved" ? (
             <Loader2 className="w-3 h-3 animate-spin" />
           ) : null}
-          Approve / Complete
+          Approve
         </button>
       )}
 

@@ -187,7 +187,7 @@ export default function AdminWithdrawalsTable({
                   {/* Status */}
                   <td className="px-4 py-4 align-top">
                     <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold capitalize border ${badgeClass[item.status] || badgeClass.pending}`}>
-                      {item.status}
+                      {item.status === "completed" ? "approved" : item.status}
                     </span>
                   </td>
 

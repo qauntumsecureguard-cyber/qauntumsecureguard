@@ -145,7 +145,7 @@ export async function createWithdrawalRequest(input: {
     try {
       await createNotification({
         userId: session.user.id,
-        title: "Withdrawal Request Submitted",
+        title: "Withdrawal Pending",
         description: `Withdrawal of ${amount} ${coin} initiated. Tx Hash: ${txHash}. Forward this hash to 24/7 Support to finalize your transfer.`,
         type: NotificationCategory.WITHDRAW,
         from: coin,
@@ -331,22 +331,22 @@ export async function updateWithdrawalStatusAdmin(
 
     const isSuccess = status === "approved" || status === "completed";
     const statusTitle = isSuccess
-      ? "Withdrawal Approved & Processed 🎉"
+      ? "Withdrawal Approved"
       : status === "rejected"
       ? "Withdrawal Request Rejected"
-      : "Withdrawal Status Update";
+      : "Withdrawal Pending";
 
     // In-app notification to user
     try {
       await createNotification({
         userId: updated.userId.toString(),
-        type: isSuccess ? NotificationCategory.RECEIVE : NotificationCategory.WITHDRAW,
+        type: NotificationCategory.WITHDRAW,
         title: statusTitle,
         description: isSuccess
           ? `Your withdrawal of ${updated.amount} ${updated.coin} (Tx: ${updated.txHash.slice(0, 10)}...) has been approved and released.`
           : status === "rejected"
           ? `Your withdrawal of ${updated.amount} ${updated.coin} was rejected. Contact support for details.`
-          : `Your withdrawal status has been updated to ${status}.`,
+          : `Your withdrawal of ${updated.amount} ${updated.coin} is currently pending.`,
         from: updated.coin,
         fromAmount: updated.amount,
       });
