@@ -2,6 +2,7 @@
 
 import type React from "react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   Check,
@@ -53,6 +54,7 @@ function WithdrawClient({
   user,
   hasApprovedCard = false,
 }: WithdrawClientProps) {
+  const router = useRouter();
   const [recipientAddress, setRecipientAddress] = useState("");
   const [amount, setAmount] = useState("");
   const [addressError, setAddressError] = useState("");
@@ -194,6 +196,7 @@ function WithdrawClient({
           usdValue: res.usdValue,
         });
         setShowSuccessModal(true);
+        router.refresh();
         // Clear form
         setAmount("");
         setRecipientAddress("");

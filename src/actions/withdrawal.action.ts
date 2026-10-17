@@ -6,8 +6,8 @@ import { getAssetsData } from "@/lib/assets";
 import { auth } from "@/lib/auth";
 import { sendEmail } from "@/lib/mail";
 import { getWithdrawalStatusUpdateTemplate } from "@/lib/email-templates/withdrawal-status-update";
+import { getCoinKey } from "@/lib/utils";
 import CardModel from "@/models/card.model";
-import NotificationModel from "@/models/notification.model";
 import WithdrawalModel from "@/models/withdrawal.model";
 import crypto from "crypto";
 import mongoose from "mongoose";
@@ -18,6 +18,80 @@ import { createNotification } from "./notification.action";
 function generateTransactionHash(): string {
   const bytes = crypto.randomBytes(32);
   return `0x${bytes.toString("hex")}`;
+}
+
+async function adjustUserCoinBalance(
+  userId: string,
+  coin: string,
+  network: string,
+  amountDelta: number
+): Promise<{ balance: number } | { error: string }> {
+  const db = await connectToDb();
+  const users = db.collection("user");
+  const coinKey = getCoinKey({
+    symbol: coin,
+    network: network === "NATIVE" ? null : network,
+  });
+  const userIdFilter = mongoose.Types.ObjectId.isValid(userId)
+    ? {
+        $or: [
+          { _id: new mongoose.Types.ObjectId(userId) },
+          { _id: userId },
+          { id: userId },
+        ],
+      }
+    : { $or: [{ _id: userId }, { id: userId }] };
+  const requestHeaders = await headers();
+
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    const session = await auth.api.getSession({ headers: requestHeaders });
+    const user =
+      session?.user.id === userId
+        ? session.user
+        : await auth.api.getUser({
+            query: { id: userId },
+            headers: requestHeaders,
+          });
+    if (!user) return { error: "User account not found." };
+
+    let coins: Record<string, { balance?: number; network?: string }>;
+    try {
+      coins = JSON.parse(user.coins || "{}") as Record<
+        string,
+        { balance?: number; network?: string }
+      >;
+    } catch {
+      return { error: "Could not read the saved account balance." };
+    }
+
+    const currentCoin = coins[coinKey] || { balance: 0 };
+    const currentBalance = Number(currentCoin.balance) || 0;
+    const updatedBalance = currentBalance + amountDelta;
+    if (!Number.isFinite(updatedBalance) || updatedBalance < 0) {
+      return { error: "Insufficient balance for this withdrawal." };
+    }
+
+    coins[coinKey] = {
+      ...currentCoin,
+      balance: updatedBalance,
+      ...(network !== "NATIVE" ? { network } : {}),
+    };
+
+    const result = await users.updateOne(
+      {
+        $and: [
+          userIdFilter,
+          user.coins === undefined
+            ? { coins: { $exists: false } }
+            : { coins: user.coins },
+        ],
+      },
+      { $set: { coins: JSON.stringify(coins) } }
+    );
+    if (result.modifiedCount === 1) return { balance: updatedBalance };
+  }
+
+  return { error: "Balance changed while processing. Please try again." };
 }
 
 export async function checkUserWithdrawalEligibility() {
@@ -128,18 +202,34 @@ export async function createWithdrawalRequest(input: {
       exists = await WithdrawalModel.findOne({ txHash }).lean();
     }
 
-    // 4. Create Withdrawal record
-    const withdrawal = await WithdrawalModel.create({
-      userId,
-      coin,
-      network,
-      amount,
-      recipientAddress,
-      txHash,
-      usdValue,
-      fee,
-      status: "pending",
-    });
+    // Reserve the funds immediately so pending requests cannot be spent twice.
+    const debit = await adjustUserCoinBalance(session.user.id, coin, network, -amount);
+    if ("error" in debit) return { error: debit.error };
+
+    let withdrawal;
+    try {
+      withdrawal = await WithdrawalModel.create({
+        userId,
+        coin,
+        network,
+        amount,
+        recipientAddress,
+        txHash,
+        usdValue,
+        fee,
+        status: "pending",
+      });
+    } catch (error) {
+      try {
+        const refund = await adjustUserCoinBalance(session.user.id, coin, network, amount);
+        if ("error" in refund) {
+          console.error("Failed to restore balance after withdrawal creation failed:", refund.error);
+        }
+      } catch (refundError) {
+        console.error("Failed to restore balance after withdrawal creation failed:", refundError);
+      }
+      throw error;
+    }
 
     // 5. In-app Notification with Tx Hash
     try {
@@ -314,19 +404,60 @@ export async function updateWithdrawalStatusAdmin(
       return { error: "Withdrawal record not found" };
     }
 
-    const updateData: any = { status };
+    const updateData: {
+      status: "pending" | "approved" | "completed" | "rejected";
+      adminNotes?: string;
+    } = { status };
     if (adminNotes !== undefined) {
       updateData.adminNotes = adminNotes;
     }
 
-    const updated = await WithdrawalModel.findByIdAndUpdate(
-      withdrawalId,
+    const previousStatus = existing.status;
+    const updated = await WithdrawalModel.findOneAndUpdate(
+      { _id: withdrawalId, status: previousStatus },
       updateData,
       { new: true }
     );
 
     if (!updated) {
-      return { error: "Failed to update withdrawal record" };
+      return { error: "Withdrawal status changed. Refresh and try again." };
+    }
+
+    const balanceDelta =
+      status === "rejected" && previousStatus !== "rejected"
+        ? updated.amount
+        : previousStatus === "rejected" && status !== "rejected"
+        ? -updated.amount
+        : 0;
+
+    if (balanceDelta !== 0) {
+      let balanceError: string | null = null;
+      try {
+        const balanceUpdate = await adjustUserCoinBalance(
+          updated.userId.toString(),
+          updated.coin,
+          updated.network,
+          balanceDelta
+        );
+        if ("error" in balanceUpdate) balanceError = balanceUpdate.error;
+      } catch (error) {
+        console.error("Failed to adjust balance for withdrawal status change:", error);
+        balanceError = "Could not update the user's balance. Please retry.";
+      }
+
+      if (balanceError) {
+        const rollback = await WithdrawalModel.updateOne(
+          { _id: updated._id, status },
+          { $set: { status: previousStatus, adminNotes: existing.adminNotes } }
+        );
+        if (rollback.modifiedCount !== 1) {
+          console.error(
+            `Could not restore withdrawal ${updated._id.toString()} status after balance update failed:`,
+            balanceError
+          );
+        }
+        return { error: balanceError };
+      }
     }
 
     const isSuccess = status === "approved" || status === "completed";
