@@ -41,17 +41,8 @@ async function adjustUserCoinBalance(
         ],
       }
     : { $or: [{ _id: userId }, { id: userId }] };
-  const requestHeaders = await headers();
-
   for (let attempt = 0; attempt < 10; attempt += 1) {
-    const session = await auth.api.getSession({ headers: requestHeaders });
-    const user =
-      session?.user.id === userId
-        ? session.user
-        : await auth.api.getUser({
-            query: { id: userId },
-            headers: requestHeaders,
-          });
+    const user = await users.findOne(userIdFilter);
     if (!user) return { error: "User account not found." };
 
     let coins: Record<string, { balance?: number; network?: string }>;
